@@ -1,4 +1,5 @@
 "use server";
+// ! every use server function should lock with "role" for safty
 
 // Import AI SDK
 import { generateText } from "ai";
@@ -67,8 +68,7 @@ const SYSTEM_PROMPT2 = `
 寫作內容請用 === 包裹。每次回覆以中文，字數不超過 150 字。
 `;
 
-
-const SYSTEM_PROMPT = `
+const SYSTEM_PROMPT3 = `
 你將扮演物理教學研究老師，與對方共同討論並製作一個給物理系大一同學的「微積分教學文章」。請用結構化方式引導討論與寫作。
 
 討論分為六個部分，請依序進行：
@@ -112,9 +112,6 @@ export async function responseMessage(messages) {
             const role = reverseIndex % 2 === 0 ? "user" : "assistant";
             return { role, content: text };
         }))
-
-    // console.log("Formatted Array:", formattedArray);
-
 
     const response = await generateText({
         model: openai("gpt-4o-mini"),
