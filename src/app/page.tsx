@@ -29,6 +29,20 @@ export default function Home() {
                         />
                         CASE 1 : AI-Core generate text + Bots chat each other →
                     </button>
+                    <button
+                        type="button"
+                        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                        onClick={() => router.push('/draw-plot')}
+                    >
+                        <Image
+                            aria-hidden
+                            src="https://nextjs.org/icons/globe.svg"
+                            alt="Globe icon"
+                            width={16}
+                            height={16}
+                        />
+                        CASE 2 : AI math draw plot →
+                    </button>
                 </div>
 
 
