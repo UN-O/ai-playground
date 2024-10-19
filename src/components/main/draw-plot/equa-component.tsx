@@ -52,7 +52,7 @@ export const EquaComponent = ({ eqution, input }: { eqution?: EquationProp, inpu
     return (
         <div className="bg-neutral-100 p-4 rounded-md m-4 max-w-prose flex items-center justify-between">
             <p>{eqution?.intro}</p>
-            {showAdvance && <Plot data={data} layout={{title: '方程式圖形'}}/>}
+            {showAdvance && <Plot data={data} layout={{ title: '方程式圖形' }} />}
             <p>{showAdvance && eqution?.detail}</p>
             {!showAdvance && <button
                 onClick={() => setShowAdvance(true)}

@@ -19,6 +19,7 @@
     "lucide-react": "^0.445.0",
     "nanoid": "^5.0.7",
     "next": "14.2.13",
+    "plotly.js": "^2.35.2",
     "react": "^18",
     "react-dom": "^18",
     "react-plotly.js": "^2.6.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/plotly.js": "^2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-plotly.js": "^2",
