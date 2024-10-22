@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClientMessage } from "@/components/main/draw-plot/action";
-import { useActions, useUIState } from "ai/rsc";
+import { useActions, useUIState, useAIState } from "ai/rsc";
 import { nanoid } from "nanoid";
 
 export default function Home() {
     const [input, setInput] = useState<string>("");
-    const [conversation, setConversation] = useUIState();
-    const { continueConversation } = useActions();
+    const [conversation, setConversation] = useUIState(); // AI provider 的 hook
+    const [messages, setMessages] = useAIState(); // AI provider 的 hook
+    const { continueConversation } = useActions(); // AI provider 的 hook 會回傳所有的 Server Action()， key client side 可以
 
+    useEffect(() => {
+        console.log("AI STATE MESSAGES", messages)
+    }, [messages]);
 
     return (
         <div className="container">
@@ -35,12 +39,12 @@ export default function Home() {
                         { id: nanoid(), role: "user", display: input },
                     ]);
 
-                    const message = await continueConversation(input);
-
+                    const message = await continueConversation(input); // 單純取得 ReactNode 的內容
+                    console.log("REACTNODE RETURN", message) // 很快就回傳了，先回傳 node 然後才開始 stream text
                     setConversation((currentConversation: ClientMessage[]) => [
                         ...currentConversation,
                         message,
-                    ]);
+                    ]); // 在 client side 更新了 UI state，綁了新的 node，接下來這些 node 就自行發揮
                 }}
             >
                 <input
