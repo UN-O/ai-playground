@@ -53,7 +53,7 @@ export default function AIChatGenerator() {
     }, [isPlaying, messages.length, handleSubmit])
 
     return (
-        <Card className="w-full max-w-2xl mx-auto h-[calc(100vh)] flex flex-col">
+        <Card className="w-full max-w-2xl mx-auto h-full flex flex-col">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-center">AI Chat Generator</CardTitle>
             </CardHeader>
