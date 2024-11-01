@@ -1,5 +1,5 @@
 // Import UI components
-import ChatSection from "@/components/main/csr-chat/rsc/chat-section";
+import ChatSection from "@/components/main/csr-chat/rsc-tool/chat-section";
 
 
 

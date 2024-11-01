@@ -4,8 +4,23 @@
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 
+const ROUTECASES = [
+    {
+        title: 'CASE 1 : AI-Core generate text + Bots chat each other',
+        route: '/core-lab'
+    },
+    {
+        title: 'CASE 2 : AI math draw plot',
+        route: '/draw-plot'
+    },
+    {
+        title: 'CASE 3 : AI-rsc StreamableValue multi-step math agent',
+        route: '/csr-chat/rsc'
+    }
+];
+
 export default function Home() {
-    const router = useRouter()
+    const router = useRouter();
 
     return (
         <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -14,38 +29,25 @@ export default function Home() {
                     This is a playground of ai sdk 3.x, select the test case to begin.
                 </ol>
 
-                <div className="flex-col gap-3 w-full">
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                        onClick={() => router.push('/core-lab')}
-                    >
-                        <Image
-                            aria-hidden
-                            src="https://nextjs.org/icons/globe.svg"
-                            alt="Globe icon"
-                            width={16}
-                            height={16}
-                        />
-                        CASE 1 : AI-Core generate text + Bots chat each other →
-                    </button>
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                        onClick={() => router.push('/draw-plot')}
-                    >
-                        <Image
-                            aria-hidden
-                            src="https://nextjs.org/icons/globe.svg"
-                            alt="Globe icon"
-                            width={16}
-                            height={16}
-                        />
-                        CASE 2 : AI math draw plot →
-                    </button>
+                <div className="grid gap-4 w-full font-mono">
+                    {ROUTECASES.map(({ title, route }) => (
+                        <button
+                            key={route}
+                            type="button"
+                            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                            onClick={() => router.push(route)}
+                        >
+                            <Image
+                                aria-hidden
+                                src="https://nextjs.org/icons/globe.svg"
+                                alt="Globe icon"
+                                width={16}
+                                height={16}
+                            />
+                            {title} →
+                        </button>
+                    ))}
                 </div>
-
-
             </main>
         </div>
     );
