@@ -28,7 +28,7 @@ export default function ChatRoom({ messages, setMessages, title, children }) {
     }, [messages])
 
     const handleDownload = useCallback(() => {
-        const content = messages.join('\n\n');
+        const content = JSON.stringify(messages, null, 2);
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

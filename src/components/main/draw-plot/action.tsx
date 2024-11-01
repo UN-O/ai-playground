@@ -25,7 +25,7 @@ export async function continueConversation(
 ): Promise<ClientMessage> {
     "use server";
 
-    const history = getMutableAIState(); // histroy 是個 class (mutable AI State), 有兩個 method: update, done. 來去跟 AI State 互動 (用來輸入給 AI 的內容)
+    const history = getMutableAIState(); // histroy 是個 class (mutable AI State), 有兩個 method: get, done. 來去跟 AI State 互動 (用來輸入給 AI 的內容)
     // ! When error occurs, the streamUI will not be closed
     const result = await streamUI({
         model: openai("gpt-4o"),

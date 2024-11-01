@@ -1,8 +1,8 @@
-This is a playground of AI-SDK 3.x by UNO
+This is a playground of AI-SDK 3.4
 
 ## Local Build
 
-First, add OPENAI_API_KEY then run the development server:
+Add OPENAI_API_KEY then run the development server:
 
 ```bash
 yarn install

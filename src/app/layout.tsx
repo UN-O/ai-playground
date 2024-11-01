@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI Playgound by UNO",
-  description: "This is a playground of AI-SDK 3.x by UNO",
+  title: "AI Playgound from NTHU AIFR",
+  description: "This is a playground of AI-SDK 3.x",
 };
 
 export default function RootLayout({
