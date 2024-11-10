@@ -47,7 +47,7 @@ function renderContent(part, className) {
 export default function ChatMessage({ index, message }) {
     const messageClassName = `p-3 rounded-lg ${message.role !== "user" ? "bg-primary text-primary-foreground" : "bg-secondary"}`;
     // 
-    if (message.role === "system" || message.role === "tool") {
+    if (message.role === "system") {
         return null;
     }
     return (

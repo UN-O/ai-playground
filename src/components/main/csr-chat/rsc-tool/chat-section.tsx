@@ -7,6 +7,7 @@ import { readStreamableValue } from 'ai/rsc';
 
 import ChatRoom from '@/components/chat/chat-room';
 import ChatInput from '@/components/chat/chat-input';
+import { e } from 'mathjs';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -14,6 +15,18 @@ export const maxDuration = 30;
 export default function ChatSection() {
     const [messages, setMessages] = useState<CoreMessage[]>([]);
     const [input, setInput] = useState<string>('');
+
+    const appendMessage = useCallback((message: CoreMessage) => {
+        setMessages((prevMessages) => {
+            if (message.role === 'assistant') {
+                const lastMessage = prevMessages[prevMessages.length - 1];
+                if (lastMessage && lastMessage.role === 'assistant') {
+                    return [...prevMessages.slice(0, -1), message];
+                }
+            }
+            return [...prevMessages, message]
+        });
+    }, []);
 
     const handleSubmit = useCallback(async () => {
         if (!input) return;
@@ -24,7 +37,7 @@ export default function ChatSection() {
 
         setMessages((prevMessages) => [...prevMessages, inputContent]);
 
-        const { history, streamValue } = await continueConversation([
+        const { streamValue } = await continueConversation([
             ...messages,
             inputContent,
         ]);
@@ -43,6 +56,7 @@ export default function ChatSection() {
                             // 如果沒有現有的 TextPart，則新增一個新的 TextPart
                             textContent.push({ type: 'text', text: part.textDelta });
                         }
+                        appendMessage({ role: 'assistant', content: textContent });
                         break;
                     }
 
@@ -54,6 +68,7 @@ export default function ChatSection() {
                             args: part.args,
                         };
                         textContent.push(toolCallPart);
+                        appendMessage({ role: 'assistant', content: textContent });
                         break;
                     }
                     case 'tool-result': {
@@ -64,6 +79,15 @@ export default function ChatSection() {
                             result: part.result,
                             isError: false,
                         };
+
+                        textContent = [];
+
+                        const toolMessage: CoreToolMessage = {
+                            role: 'tool',
+                            content: [ToolResultPart],
+                        };
+
+                        appendMessage(toolMessage);
 
                         toolResults.push(ToolResultPart);
                         break;
@@ -76,23 +100,6 @@ export default function ChatSection() {
                         console.error('An error occurred:', part);
                         break;
                     }
-                }
-
-                setMessages([
-                    ...history,
-                    { role: 'assistant', content: [...textContent] },
-                ]);
-
-                // 最後將 toolResults 作為一條獨立的 CoreToolMessage 加入訊息流
-                if (toolResults.length > 0) {
-                    const toolMessage: CoreToolMessage = {
-                        role: 'tool',
-                        content: toolResults,
-                    };
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        toolMessage,
-                    ]);
                 }
             }
         } catch (error) {
