@@ -16,6 +16,10 @@ const ROUTECASES = [
     {
         title: 'CASE 3 : AI-rsc StreamableValue multi-step math agent',
         route: '/csr-chat/rsc'
+    },
+    {
+        title: 'CASE 4 : AI-rsc Chemistry agent',
+        route: '/chemistry'
     }
 ];
 
