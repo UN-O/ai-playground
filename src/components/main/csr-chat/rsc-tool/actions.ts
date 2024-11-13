@@ -102,6 +102,76 @@ const ARG_V1= {
     maxSteps: 10,
 }
 
+const ARG_V2= {
+    model: openai('gpt-4-turbo'),
+    system:
+        `你是解題寶貝，你會連續使用工具來產生結構化解答
+        你的回答內請勿使用 latex 公式，每當遇到數學公式只能使用 latex_equation 工具來產生數學公式區塊，包含最終的解答也要使用這個工具。
+        Must Respond succinctly. Help the students understand how to think through the problem, rather than simply providing the answer.Respond succinctly.`,
+    tools: {
+        latex_equation: tool({
+            description: 'A tool for generate latex equation and its explanation.',
+            parameters: z.object({ 
+                equation: z.string().describe("the equation of the problem in latex format"),
+                explanation: z.string().describe("the explanation of the equation"),
+            }),
+            execute: async () => {
+                return "done";
+            },
+        }),
+    },
+    onStepFinish({ stepType, toolCalls }) {
+        console.log('Step finished:', stepType, toolCalls);
+    },
+    maxSteps: 10,
+}
+
+const ARG_V3= {
+    model: openai('gpt-4o'),
+    system:
+        `你是解題寶貝，專門產生系統性引導式解答
+        在解題開始前請自我介紹打招呼
+        如果使用者問了一個新問題請使用 step_answer 工具來回答問題，不行多說其他話
+        解題結束後不需要再說其他話
+
+        如果使用者追問問題，請勿使用 step_answer 工具，直接回答問題即可
+        `,
+    tools: {
+        step_answer: tool({
+            description: 'A tool for generate structure answer of physics problem IN 繁體中文 #zh-TW.',
+            parameters: z.object({ 
+                physic_problem_statement: z.string().describe("summarize the problem statement in detial, including all the necessary information"),
+                answer_requerment: z.string().describe("list the answer requirement ex. the equation of motion and explicit function solution y(t)=?"),
+                brief_analysis: z.string().describe("brief analysis of the problem statement from previous steps"),
+            }),
+
+            execute: async ({ physic_problem_statement, answer_requerment , brief_analysis }) => {
+                const result = await generateObject({
+                    model: openai("gpt-4o"),
+                    schema: z.object({
+                        steps: z.array(
+                            z.object({
+                                concept: z.string().describe("brief calculation statement"),
+                                latex_formulas: z.string().describe("the latex formula of the calculation step"),
+                                textual_description: z.string().describe("detail explain of the calculation use $ /latex $ for inline math"),
+                            }),
+                        ).describe("Please make sure to organize the key concepts for solving the problem."),
+                        notification: z.string().describe("justify important details to be aware of"),
+                    }),
+                    messages: [
+                        { role: "system", content: "YOU ARE a professional explanation generator for physics students slove the whole problem in detail. Highlight necessary formulas. Please make sure to organize the key concepts for solving the problem and the important details to be aware of. Focus on providing a textual description and detail calculation. Execute the math, solve whole problem in detail step by step. Use symbolic representation over actual numbers where appropriate. Finish all calculation in 繁體中文 #zh-TW." },
+                        { role: "user", content: `please give me ${answer_requerment} for ${physic_problem_statement} I know that ${brief_analysis}` }
+                    ],
+                }); 
+                return result.object;
+            },
+        }),
+    },
+    onStepFinish({ stepType, toolCalls }) {
+        console.log('Step finished:', stepType, toolCalls);
+    },
+    maxSteps: 10,
+}
 
 // Continue the conversation with the user's input
 export async function continueConversation(history: CoreMessage[]) {
@@ -110,7 +180,7 @@ export async function continueConversation(history: CoreMessage[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const result = await streamText({...ARG_V1, messages: history,});
+        const result = await streamText({...ARG_V3, messages: history,});
 
         for await (const part of result.fullStream) {
             stream.update(part);
