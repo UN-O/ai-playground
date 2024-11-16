@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 
-export const EquaComponent = ({ equation }: { equation?: string }) => {
+
+export default function EquaComponent ({ equation }: { equation?: string })  {
     const [data, setData] = useState([]);
 
     useEffect(() => {

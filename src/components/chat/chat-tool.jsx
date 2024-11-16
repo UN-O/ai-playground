@@ -1,6 +1,6 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { RenderMarkdown } from "@/utils/rendering"
-import { EquaComponent } from "./tool-call/equa-component"
+import EquaComponent from "./tool-call/equa-component"
 
 export function ToolCall({ toolName, args }) {
     switch (toolName) {
