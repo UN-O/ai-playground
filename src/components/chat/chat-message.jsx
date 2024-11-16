@@ -1,4 +1,4 @@
-import { ToolCall, ToolResult } from "@/components/chat/tool-call"
+import { ToolCall, ToolResult } from "@/components/chat/chat-tool"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { RenderMarkdown } from "@/utils/rendering"
 
