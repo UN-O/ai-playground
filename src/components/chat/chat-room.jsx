@@ -10,7 +10,7 @@ import { Download, Trash2 } from "lucide-react"
 
 
 
-export default function ChatRoom({ messages, setMessages, title, children }) {
+export default function ChatRoom({ messages, setMessages, title, children, toolResultRender=[] }) {
     const scrollAreaRef = useRef(null)
 
     const handleClear = useCallback(() => {
@@ -60,7 +60,7 @@ export default function ChatRoom({ messages, setMessages, title, children }) {
                 <ScrollArea className="h-full pr-4">
                     <div ref={scrollAreaRef} className="h-full">
                         {messages.map((message, index) => (
-                            <ChatMessage message={message} index={index} />
+                            <ChatMessage key={index} message={message} index={index} toolResultRender={toolResultRender}/>
                         ))}
                     </div>
                 </ScrollArea>

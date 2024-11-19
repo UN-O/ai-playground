@@ -1,6 +1,7 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { RenderMarkdown } from "@/utils/rendering"
 import EquaComponent from "./tool-call/equa-component"
+import { to } from "mathjs";
 
 export function ToolCall({ toolName, args }) {
     switch (toolName) {
@@ -60,7 +61,7 @@ export function ToolCall({ toolName, args }) {
         }
         default: {
             return (
-                <div className="bg-stone-800 font-mono text-sm p-2 rounded text-secondary">
+                <div className="bg-stone-800 font-mono text-sm p-2 rounded text-secondary max-w-md">
                     <strong>Tool Call:</strong> {toolName}
                     <br />
                     <strong>Arguments:</strong> {JSON.stringify(args, null, 2)}
@@ -70,8 +71,16 @@ export function ToolCall({ toolName, args }) {
     }
 }
 
-export function ToolResult({ toolName, result, isError }) {
+export function ToolResult({ toolName, result, isError, toolResultRender }) {
+
+    if (toolResultRender?.length > 0) {
+        console.log("i get here");
+        const Component = toolResultRender.find(tool => tool.toolName === toolName).component;
+        return <Component result={result} />;
+    }
+    
     switch (toolName) {
+        
         case 'step_answer': {
             return (
                 <div className="w-full">
@@ -118,9 +127,10 @@ export function ToolResult({ toolName, result, isError }) {
                 </div>
             );
         }
+
         default: {
             return (
-                <div className={`bg-${isError ? 'red' : 'green'}-200 text-sm p-2 rounded`}>
+                <div className={`bg-${isError ? 'red' : 'green'}-200 text-sm p-2 rounded max-w-md`}>
                     <strong>Tool Result:</strong> {toolName}
                     <br />
                     <strong>Result:</strong> {JSON.stringify(result, null, 2)}

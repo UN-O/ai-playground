@@ -3,11 +3,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { RenderMarkdown } from "@/utils/rendering"
 
 
-function renderContent(part, className) {
+function RenderContent({ part, className, toolResultRender }) {
     switch (part.type) {
         case 'text': {
             const paragraphs = part.text.split('---').map((paragraph, i) => (
-                <div key={`text-${i}`} className={`text-sm whitespace-pre-wrap ${className} mb-2 w-fit text-justify`}>
+                <div key={`text-${i}`} className={`text-sm whitespace-pre-wrap ${className} mb-2 w-fit text-justify max-w-md`}>
                     <RenderMarkdown>
                         {paragraph}
                     </RenderMarkdown>
@@ -37,14 +37,14 @@ function renderContent(part, className) {
         case 'tool-call':
             return (<ToolCall toolName={part.toolName} args={part.args} />);
         case 'tool-result':
-            return (<ToolResult toolName={part.toolName} result={part.result} isError={part.isError} />);
+            return (<ToolResult toolName={part.toolName} result={part.result} isError={part.isError} toolResultRender={toolResultRender} />);
         default:
             return null;
     }
 }
 
 
-export default function ChatMessage({ index, message }) {
+export default function ChatMessage({ index, message, toolResultRender }) {
     const messageClassName = `p-3 rounded-lg ${message.role !== "user" ? "bg-primary text-primary-foreground" : "bg-secondary"}`;
     // 
     if (message.role === "system") {
@@ -60,7 +60,7 @@ export default function ChatMessage({ index, message }) {
                     <AvatarFallback className="text-white bg-red-500">{message?.name || "AI"}</AvatarFallback>
                 </Avatar>
             ) : null}
-            <div className="flex flex-col sm:max-w-[60%]">
+            <div className="flex flex-col">
                 {Array.isArray(message.content)
                     ? message.content.map((part, partIndex) => (
                         <div
@@ -69,12 +69,12 @@ export default function ChatMessage({ index, message }) {
                                 transition-opacity duration-500 ease-in opacity-0 transform
                                 animate-fade-in`}
                         >
-                            {renderContent(part, messageClassName)}
+                            <RenderContent key={partIndex} part={part} className={messageClassName} toolResultRender={toolResultRender}/>
                         </div>
                     ))
                     : (
                         <div>
-                            {renderContent({ type: 'text', text: message.content }, messageClassName)}
+                            <RenderContent part={{ type: 'text', text: message.content }} className={messageClassName}  />
                         </div>
                     )}
             </div>
