@@ -26,7 +26,7 @@ export async function continueConversation(history: Message[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const { textStream } = await streamText({
+        const { textStream } = streamText({
             model: openai('gpt-4o'),
             system:
                 "你是一個聊天機器人，在你說話時，請不要一次回覆長文，而是分為不同的訊息，請你在回覆時盡可能長一點，並使用．作為每句話的斷點，請不要使用超過三個，也不要太頻繁使用，需要確保每段句子是單獨順暢並且有結束點的。",

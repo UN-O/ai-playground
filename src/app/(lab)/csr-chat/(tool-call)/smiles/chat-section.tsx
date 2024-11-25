@@ -5,9 +5,9 @@ import { continueConversation } from './actions';
 import { CoreMessage, ToolCallPart, ToolResultPart, TextPart, CoreToolMessage } from 'ai';
 import { readStreamableValue } from 'ai/rsc';
 
+import SmilePlot from "./tool-result/smile-plot";
 import ChatRoom from '@/components/chat/chat-room';
 import ChatInput from '@/components/chat/chat-input';
-import StepAnswer from './tool-result/step-answer';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -110,7 +110,12 @@ export default function ChatSection() {
 
 
     return (
-        <ChatRoom messages={messages} setMessages={setMessages} title={"inline step answer chat room"} toolResultRender={[{ toolName: "step_answer", component: StepAnswer }]}>
+        <ChatRoom
+            messages={messages}
+            setMessages={setMessages}
+            title={"Plot Chemdoodle chat room"}
+            toolResultRender={[{ toolName: "generate_smiles_script", component: SmilePlot }]}
+        >
             <ChatInput input={input} setInput={setInput} handleSubmit={handleSubmit} />
         </ChatRoom>
     );

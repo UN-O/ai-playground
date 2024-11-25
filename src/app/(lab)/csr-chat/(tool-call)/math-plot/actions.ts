@@ -13,7 +13,7 @@ export async function continueConversation(history: CoreMessage[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const result = await streamText({
+        const result = streamText({
             model: openai('gpt-3.5-turbo'),
             system:
                 'You are a helpfull assistant who would add "---" to separate every sentence.' +

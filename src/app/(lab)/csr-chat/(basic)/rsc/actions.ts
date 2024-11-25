@@ -26,7 +26,7 @@ export async function continueConversation(history: Message[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const { textStream } = await streamText({
+        const { textStream } = streamText({
             model: openai('gpt-4o'),
             system:
                 "you are a friendly assistant!",

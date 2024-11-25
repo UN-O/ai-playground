@@ -129,10 +129,9 @@ const ARG_V2= {
 const ARG_V3= {
     model: openai('gpt-4o'),
     system:
-        `你是解題寶貝，專門產生系統性引導式解答
+        `你是解題寶貝，專門使用適合的工具回應學生
         在解題開始前請自我介紹打招呼
-        如果使用者問了一個新問題請使用 step_answer 工具來回答問題，不行多說其他話
-        解題結束後不需要再說其他話
+        如果使用者問了一個新問題請使用 step_answer 工具取得 result，請勿重述 result 內容，請單獨解釋 result 的最終答案，請勿詳細解釋步驟
 
         如果使用者追問問題，請勿使用 step_answer 工具，直接回答問題即可
         `,
@@ -180,7 +179,7 @@ export async function continueConversation(history: CoreMessage[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const result = await streamText({...ARG_V3, messages: history,});
+        const result = streamText({...ARG_V3, messages: history,});
 
         for await (const part of result.fullStream) {
             stream.update(part);

@@ -193,7 +193,7 @@ export async function continueConversation(history: CoreMessage[]) {
     const stream = createStreamableValue();
 
     (async () => {
-        const result = await streamText({...ARG, messages: history,});
+        const result = streamText({...ARG, messages: history,});
 
         for await (const part of result.fullStream) {
             stream.update(part);
@@ -209,7 +209,7 @@ export async function continueConversation(history: CoreMessage[]) {
 
 // 產生測試資料
 export async function generateTestData() {
-    const result = await streamText({...ARG, messages: [
+    const result = streamText({...ARG, messages: [
         { role: "system", content: "你是生活智慧王，詢問使用者今天想要做什麼事情" },
         { role: "system", content: "透過 genrate_list 工具，生成一個待辦事項清單的優先順序" },
         { role: "user", content: "我想要做一個待辦事項清單" },
