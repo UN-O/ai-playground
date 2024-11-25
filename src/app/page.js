@@ -1,21 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
 import { getRoutes } from "@/utils/get-routes";
-
-const ROUTECASES = [
-    {
-        title: 'CASE 1 : AI-Core generate text + Bots chat each other',
-        route: '/core-lab'
-    },
-    {
-        title: 'CASE 2 : AI math draw plot',
-        route: '/draw-plot'
-    },
-    {
-        title: 'CASE 3 : AI-rsc StreamableValue multi-step math agent',
-        route: '/csr-chat/rsc'
-    }
-];
 
 // 構建樹狀結構
 function buildHierarchy(routes) {
@@ -98,7 +81,7 @@ export default function Home() {
             <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start w-full">
                 <div className="text-2xl font-bold text-center">AI SDK playground</div>
                 <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-                    This is a playground of ai sdk 3.4.0 by AIFR, select the test case to begin.
+                    This is a playground of ai sdk 4.0.2 by AIFR, select the test case to begin.
                 </ol>
                 <div className="grid gap-4 font-mono w-full">
                     {renderHierarchy(hierarchy)}

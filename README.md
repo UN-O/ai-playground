@@ -1,4 +1,4 @@
-This is a playground of AI-SDK 3.4
+This is a playground of AI-SDK 4.0
 
 ## Local Build
 

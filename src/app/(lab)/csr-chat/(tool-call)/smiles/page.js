@@ -1,5 +1,6 @@
 // Import UI components
 import ChatSection from "./chat-section";
+import Script from "next/script";
 
 export const metadata = {
     title: "Tool Result - Chemdoodle plot",
