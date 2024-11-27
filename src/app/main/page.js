@@ -1,9 +1,15 @@
+"use client"
+// Import UI components
+import Sections from "./sections";
+import { ToolsProvider } from './_hooks/tools-provider';
 
-export const metadata = {
-    title: "Main",
-    description: "There is nothing here now.",
-};
 
-export default function APP() {
-    return <></>
+export default function Page() {
+    return (
+        <ToolsProvider>
+            <div className="h-svh w-full">
+                <Sections />
+            </div>
+        </ToolsProvider>
+    );
 }

@@ -24,7 +24,7 @@
         "fs": "^0.0.1-security",
         "lucide-react": "^0.445.0",
         "mathjs": "^13.2.0",
-        "nanoid": "^5.0.7",
+        "nanoid": "^5.0.8",
         "next": "^15.0.3",
         "path": "^0.12.7",
         "plotly.js": "^2.35.2",
@@ -45,7 +45,7 @@
         "zustand": "^5.0.1"
     },
     "peerDependencies": {
-        "chemdoodleweb": "ChemDoodleWeb-10.0.0"
+        "chemdoodleweb": "*"
     },
     "devDependencies": {
         "@types/node": "^20",
