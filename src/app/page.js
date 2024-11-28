@@ -1,5 +1,32 @@
 import { getRoutes } from "@/utils/get-routes";
 
+// Components & UI
+import { ThemeToggle } from "@/components/common/theme-toggle";
+import { WrapperLayout } from "@/components/common/layouts";
+import { Anchor, H1, Muted } from "@/components/common/typography";
+
+
+
+export default function HomePage() {
+    const routes = getRoutes();
+    const hierarchy = buildHierarchy(routes);
+
+	console.log(hierarchy);
+
+    return (
+		<main className="py-6 sm:py-16">
+			<WrapperLayout width={1000} className="grid gap-y-4">
+				<div className="space-y-2">
+					<H1 className="">AI SDK Playground</H1>
+					<Muted>This is a playground of AI SDK 4.0.7 by AIFR, select a test case to begin.</Muted>
+				</div>
+				<ThemeToggle />
+				{renderHierarchy(hierarchy)}
+			</WrapperLayout>
+		</main>
+    );
+}
+
 // 構建樹狀結構
 function buildHierarchy(routes) {
     const tree = {};
@@ -25,6 +52,7 @@ function buildHierarchy(routes) {
 // 遞歸渲染層級結構
 function renderHierarchy(tree, basePath = "", isLast = false, depth = 0) {
     const keys = Object.keys(tree);
+
     return keys.map((key, idx) => {
         const node = tree[key];
         const isLeaf = !Object.keys(node.children).length;
@@ -32,33 +60,33 @@ function renderHierarchy(tree, basePath = "", isLast = false, depth = 0) {
         const fullPath = `${basePath}/${key}`; // 構建完整路徑
 
         return (
-            <div key={fullPath} className={`relative ${depth === 0 ? "max-w-md md:max-w-lg lg:max-w-full":"w-full"}`}>
+            <div key={fullPath} className="font-mono text-sm">
                 {/* 顯示當前層的項目 */}
-                <div className="flex items-start w-full">
+                <div className="flex items-center">
                     {/* 使用 ├─ 或 └─ */}
-                    <div className={`w-fit text-stone-700`}>
-                        {depth > 0 ? (isLastChild ? "└─" : "├─") : ""}
-                    </div>
-                    <div className="pl-2 w-full">
-                        {!isLeaf ? (
-                            <div className="font-bold text-stone-600">{key}</div>
-                        ) : (
-                            <div className="flex space-x-2 w-full place-items-center">
-                                <a
-                                    href={fullPath} // 使用完整路徑
-                                    className="text-white hover:underline w-32 truncate"
-                                >
-                                    {key}
-                                </a>
-                                {node.metadata?.description && (
-                                    <div className="w-full text-stone-800 font-[family-name:var(--font-geist-mono)] text-sm truncate capitalize">
-                                        : {node.metadata.description}
-                                    </div>
-                                )}
-                                
-                            </div>
-                        )}
-                    </div>
+					{depth > 0 && (
+						<Muted className="w-fit">
+							{isLastChild ? "└─" : "├─"}
+						</Muted>
+					)}
+					{!isLeaf ? (
+						<Muted className="font-bold">{key}</Muted>
+					) : (
+						<div className="flex space-x-2 w-full place-items-center">
+							<Anchor
+								href={fullPath} // 使用完整路徑
+								className="text-white hover:underline w-32 truncate"
+							>
+								{key}
+							</Anchor>
+							{node.metadata?.description && (
+								<Muted className="w-full truncate capitalize">
+									: {node.metadata.description}
+								</Muted>
+							)}
+
+						</div>
+					)}
                 </div>
 
                 {/* 遞歸渲染子節點 */}
@@ -70,23 +98,4 @@ function renderHierarchy(tree, basePath = "", isLast = false, depth = 0) {
             </div>
         );
     });
-}
-
-export default function Home() {
-    const routes = getRoutes()
-    const hierarchy = buildHierarchy(routes);
-
-    return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] w-screen">
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start w-full">
-                <div className="text-2xl font-bold text-center">AI SDK playground</div>
-                <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-                    This is a playground of ai sdk 4.0.2 by AIFR, select the test case to begin.
-                </ol>
-                <div className="grid gap-4 font-mono w-full">
-                    {renderHierarchy(hierarchy)}
-                </div>
-            </main>
-        </div>
-    );
 }

@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+
+
 export function getRoutes() {
     const appDir = path.join(process.cwd(), "src/app");
     const routes = [];
@@ -68,3 +70,8 @@ export function getRoutes() {
     findMetadata(appDir);
     return routes;
 }
+
+// export function getRoutes() {
+//     const appDir = path.join(process.cwd(), "src/app");
+//     const routes = [];
+// }
