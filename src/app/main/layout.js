@@ -1,12 +1,11 @@
+// Metadata
 export const metadata = {
     title: "Main",
-    description: "AI Chatbot with Block Solver",
+    description: "AI chatbot with block solver.",
 };
 
-export default function layout({ children }) {
-    return (
-        <>
-            {children}
-        </>
-    );
+
+
+export default function MainLayout({ children }) {
+    return children;
 }

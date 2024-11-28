@@ -1,10 +1,7 @@
-// Import UI components
+// Components & UI
 import ChatSection from "./chat-section";
 
-export const metadata = {
-    title: "AI SDK RSC",
-    description: "use `createStreamableValue` from ai-sdk-rsc by UNO",
-};
+
 
 export default function Page() {
     return (

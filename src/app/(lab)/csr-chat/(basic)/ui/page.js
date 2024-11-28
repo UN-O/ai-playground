@@ -1,10 +1,7 @@
-// Import UI components
+// Components & UI
 import ChatSection from "./chat-section";
 
-export const metadata = {
-    title: "AI SDK UI: useChat",
-    description: "use `useChat` hook from ai-sdk-ui by UNO",
-};
+
 
 export default function Page() {
     return (

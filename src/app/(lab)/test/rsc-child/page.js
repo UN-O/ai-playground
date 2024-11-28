@@ -1,13 +1,10 @@
-// My Server Page
+// Components & UI
 import { ClientComponent } from "./client"
 import { ServerChild } from "./server-child"
 
-export const metadata = {
-    title: "Server Side Component Test",
-    description: "Server Side Page has a Client Side Component has a Server Side Child Component.",
-};
 
-/** 
+
+/**
  * This page demonstrates the rendering of both Server and Client components.
  * The ClientComponent manages user interaction, while the ServerChild fetches data on the server side.
  * The components work together to show how server and client-side rendering can be combined in a Next.js application.
@@ -29,7 +26,7 @@ export default function Page() {
 
 Server Side Console:
     Server Page Render 1729346684110
-    ClientComponent Render 1729346684160 
+    ClientComponent Render 1729346684160
     GOOD FETCH 1729346684330
     GET /rsc-lab 200 in 153ms
     GET /favicon.ico 200 in 11ms

@@ -1,9 +1,11 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { ClientMessage } from "./action";
 import { useActions, useUIState, useAIState } from "ai/rsc";
 import { nanoid } from "nanoid";
+
+// Types
+import { ClientMessage } from "./action";
+
 
 
 export default function Home() {

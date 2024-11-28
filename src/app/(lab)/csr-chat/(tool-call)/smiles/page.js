@@ -1,11 +1,7 @@
-// Import UI components
+// Components & UI
 import ChatSection from "./chat-section";
 import Script from "next/script";
 
-export const metadata = {
-    title: "Tool Result - Chemdoodle plot",
-    description: "????????????? by SSC",
-};
 
 
 export default function Page() {

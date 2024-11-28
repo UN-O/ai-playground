@@ -1,10 +1,12 @@
 "use client"
-// Import UI components
+
+// Components & UI
 import Sections from "./sections";
 import { ToolsProvider } from './_hooks/tools-provider';
 
 
-export default function Page() {
+
+export default function MainPage() {
     return (
         <ToolsProvider>
             <div className="h-svh w-full">
