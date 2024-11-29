@@ -29,6 +29,8 @@ export default function SketchApp({ handleSend }) {
 	const [eraseMode, setEraseMode] = useState(false)
 	const [hasNewDrawing, setHasNewDrawing] = useState(false)
 	const svgRef = useRef<SVGSVGElement>(null)
+	const scaleRef = useRef(1)
+	const qualityRef = useRef(0.8)
 
 	const handlePointerDown = useCallback((event: React.PointerEvent<SVGSVGElement>) => {
 		const point = getPointerPosition(event)
@@ -105,20 +107,16 @@ export default function SketchApp({ handleSend }) {
 		setStrokes([])
 		setHasNewDrawing(true)
 	}, [])
+
 	const handleCheckClick = async () => {
 		if (!svgRef.current) return;
 
 		const svgElement = svgRef.current;
 
-		const exportAsImage = (svgElement, format = 'png', scale = 2) => {
+		const exportAsImage = (svgElement, format = 'webp', scale = 2, quality = 1.0) => {
 			return new Promise((resolve, reject) => {
-				if (!['png', 'jpeg', 'gif', 'webp'].includes(format)) {
-					reject(new Error(`Unsupported format: ${format}. Use one of ['png', 'jpeg', 'gif', 'webp'].`));
-					return;
-				}
-
 				const rect = svgElement.getBoundingClientRect();
-				const width = rect.width * window.devicePixelRatio; // 適配高分辨率螢幕
+				const width = rect.width * window.devicePixelRatio;
 				const height = rect.height * window.devicePixelRatio;
 				const canvas = document.createElement('canvas');
 				const context = canvas.getContext('2d');
@@ -127,7 +125,6 @@ export default function SketchApp({ handleSend }) {
 				canvas.width = width * scale;
 				canvas.height = height * scale;
 
-				// 確保畫布初始化為白底
 				context.fillStyle = 'white';
 				context.fillRect(0, 0, canvas.width, canvas.height);
 				context.scale(scale * window.devicePixelRatio, scale * window.devicePixelRatio);
@@ -157,7 +154,7 @@ export default function SketchApp({ handleSend }) {
 								}
 							},
 							`image/${format}`,
-							1.0 // 高畫質
+							quality
 						);
 					});
 				};
@@ -166,8 +163,8 @@ export default function SketchApp({ handleSend }) {
 					try {
 						const url = serializeSVG();
 						await loadImage(url);
-						context.drawImage(img, 0, 0); // 畫布繪製圖像
-						URL.revokeObjectURL(url); // 清除 URL
+						context.drawImage(img, 0, 0);
+						URL.revokeObjectURL(url);
 						const blob = await exportToBlob();
 						resolve(blob);
 					} catch (error) {
@@ -175,6 +172,49 @@ export default function SketchApp({ handleSend }) {
 					}
 				})();
 			});
+		};
+
+		const compressImageToFit = async (svgElement, targetFileSize = 7.5 * 1024) => {
+			let scale = scaleRef.current;
+			let quality = qualityRef.current;
+			let format = 'webp'; // 使用高壓縮率格式
+			let blob;
+			let originalSize;
+
+			while (scale > 0.1) {
+				try {
+					blob = await exportAsImage(svgElement, format, scale, quality);
+
+					// 記錄原始檔案大小
+					if (!originalSize) {
+						originalSize = blob.size;
+						console.log(`Original File Size: ${originalSize / 1024} KB`);
+					}
+
+					if (blob.size <= targetFileSize) {
+						console.log(`Final File Size: ${blob.size / 1024} KB`);
+						console.log(
+							`Compression Ratio: ${(1 - blob.size / originalSize) * 100}%`
+						);
+						return blob;
+					}
+
+					// 若檔案過大，降低品質或縮放比例
+					quality -= 0.1;
+					if (quality < 0.1) {
+						quality = 1.0;
+						scale -= 0.1;
+					}
+				} catch (error) {
+					console.error('Compression failed:', error);
+					break;
+				}
+			}
+
+			scaleRef.current = scale;
+			qualityRef.current = quality;
+
+			throw new Error('Unable to compress image to fit within the specified file size.');
 		};
 
 		const blobToBase64 = (blob) => {
@@ -193,15 +233,17 @@ export default function SketchApp({ handleSend }) {
 		};
 
 		try {
-			const blob = await exportAsImage(svgElement, 'png', 2); // 可調整格式與縮放比例
-			const base64Image = await blobToBase64(blob); // 將 Blob 轉換為 Base64
-			handleSend(base64Image); // 傳送 Base64 編碼影像
-			console.log('Base64 Encoded Image:', base64Image);
+			const compressedBlob = await compressImageToFit(svgElement, 7.5 * 1024); // 壓縮至 7.5 KB
+			const base64Image = await blobToBase64(compressedBlob);
+			handleSend(base64Image); // 傳送壓縮後的 Base64 編碼影像
+			console.log('Compressed Base64 Encoded Image:', base64Image);
 			setHasNewDrawing(false);
 		} catch (error) {
-			console.error('Error exporting and downloading image:', error);
+			console.error('Error exporting and compressing image:', error);
 		}
 	};
+
+
 
 
 
