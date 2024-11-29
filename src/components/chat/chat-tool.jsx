@@ -13,7 +13,7 @@ export function ToolCall({ toolName, args }) {
                     <Accordion type="multiple" collapsible className="bg-stone-800 text-secondary font-mono text-sm p-2 rounded-lg mb-2">
                         <div className="space-y-1">
                             {args.steps.map((step, index) => (
-                                <AccordionItem value={`item-${index}`}>
+                                <AccordionItem key={index} value={`item-${index}`}>
                                     <div className="grid gap-1" key={index}>
                                         <AccordionTrigger className="flex gap-1">
                                             <div className="font-bold px-2">
@@ -74,9 +74,9 @@ export function ToolResult({ toolName, result, isError, toolResultRender }) {
         const Component = toolResultRender.find(tool => tool.toolName === toolName).component;
         return <Component result={result} />;
     }
-    
+
     switch (toolName) {
-        
+
         // case 'step_answer': {
         //     return (
         //         <div className="w-full">
