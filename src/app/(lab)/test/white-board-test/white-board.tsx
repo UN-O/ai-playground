@@ -113,66 +113,53 @@ export default function SketchApp({ handleSend }) {
 
 		const svgElement = svgRef.current;
 
-		const exportAsImage = (svgElement, format = 'webp', scale = 2, quality = 1.0) => {
-			return new Promise((resolve, reject) => {
+		const exportAsImage = async (svgElement, format = 'webp', scale = 2, quality = 1.0) => {
+			return new Promise(async (resolve, reject) => {
 				const rect = svgElement.getBoundingClientRect();
-				const width = rect.width * window.devicePixelRatio;
-				const height = rect.height * window.devicePixelRatio;
+				const width = rect.width;
+				const height = rect.height;
 				const canvas = document.createElement('canvas');
 				const context = canvas.getContext('2d');
 				const img = new Image();
 
-				canvas.width = width * scale;
-				canvas.height = height * scale;
+				canvas.width = width * scale * window.devicePixelRatio;
+				canvas.height = height * scale * window.devicePixelRatio;
 
-				context.fillStyle = 'white';
-				context.fillRect(0, 0, canvas.width, canvas.height);
-				context.scale(scale * window.devicePixelRatio, scale * window.devicePixelRatio);
+				// 保證正確繪製比例
+				context.scale(scale, scale);
 
-				const serializeSVG = () => {
-					const svgData = new XMLSerializer().serializeToString(svgElement);
-					const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
-					return URL.createObjectURL(svgBlob);
+				// 確保 SVG 有 viewBox
+				if (!svgElement.hasAttribute('viewBox')) {
+					const bbox = svgElement.getBBox();
+					svgElement.setAttribute('viewBox', `0 0 ${bbox.width} ${bbox.height}`);
+				}
+
+				// 序列化 SVG
+				const svgData = new XMLSerializer().serializeToString(svgElement);
+				const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
+				const url = URL.createObjectURL(svgBlob);
+
+				img.onload = () => {
+					context.drawImage(img, 0, 0, canvas.width, canvas.height);
+					URL.revokeObjectURL(url);
+					canvas.toBlob(
+						(blob) => {
+							if (blob) {
+								resolve(blob);
+							} else {
+								reject(new Error('Canvas toBlob failed'));
+							}
+						},
+						`image/${format}`,
+						quality
+					);
 				};
 
-				const loadImage = (src) => {
-					return new Promise((resolve, reject) => {
-						img.onload = () => resolve(img);
-						img.onerror = () => reject(new Error('Failed to load SVG into Image'));
-						img.src = src;
-					});
-				};
-
-				const exportToBlob = () => {
-					return new Promise((resolve, reject) => {
-						canvas.toBlob(
-							(blob) => {
-								if (blob) {
-									resolve(blob);
-								} else {
-									reject(new Error('Canvas toBlob failed'));
-								}
-							},
-							`image/${format}`,
-							quality
-						);
-					});
-				};
-
-				(async () => {
-					try {
-						const url = serializeSVG();
-						await loadImage(url);
-						context.drawImage(img, 0, 0);
-						URL.revokeObjectURL(url);
-						const blob = await exportToBlob();
-						resolve(blob);
-					} catch (error) {
-						reject(error);
-					}
-				})();
+				img.onerror = (e) => reject(new Error('Failed to load SVG into Image'));
+				img.src = url;
 			});
 		};
+
 
 		const compressImageToFit = async (svgElement, targetFileSize = 7.5 * 1024) => {
 			let scale = scaleRef.current;
