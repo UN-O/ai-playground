@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { getAppHierarchy } from "@/lib/route-utils";
+import { findMaxKeyLength, getAppHierarchy } from "@/lib/route-utils";
 
 // Components & UI
 import { ThemeToggle } from "@/components/common/theme-toggle";
@@ -10,6 +10,7 @@ import { Anchor, H1, Muted } from "@/components/common/typography";
 
 export default function HomePage() {
     const hierarchy = getAppHierarchy();
+	const maxKeyLength = findMaxKeyLength(hierarchy);
 
     return (
 		<main className="py-6 sm:py-16">
@@ -22,14 +23,14 @@ export default function HomePage() {
 					<ThemeToggle />
 				</div>
 				<div className="grid gap-y-2 font-mono">
-					{renderHierarchy(hierarchy)}
+					{renderHierarchy({ hierarchy, maxKeyLength })}
 				</div>
 			</WrapperLayout>
 		</main>
     );
 }
 
-function renderHierarchy(hierarchy, basePath = "") {
+function renderHierarchy({ hierarchy, basePath = "", maxKeyLength }) {
 	const keys = Object.keys(hierarchy);
 
 	return keys.map((key, index) => {
@@ -46,10 +47,20 @@ function renderHierarchy(hierarchy, basePath = "") {
 
 					{/* Route & Description */}
 					{isLeaf ? <Anchor href={fullPath}>{key}</Anchor> : key}
-					{isLeaf && `: ${node.metadata?.description}`}
+					{isLeaf &&
+						`${"\u00a0".repeat(maxKeyLength - key.length)}
+						: ${node.metadata?.description}`}
 
 					{/* Children */}
-					{!isLeaf && <div>{renderHierarchy(node.children, fullPath)}</div>}
+					{!isLeaf && (
+						<div>
+							{renderHierarchy({
+								hierarchy: node.children,
+								basePath: fullPath,
+								maxKeyLength
+							})}
+						</div>
+					)}
 				</Muted>
 			</Fragment>
 		);

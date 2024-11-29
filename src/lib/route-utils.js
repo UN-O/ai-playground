@@ -4,6 +4,13 @@ import vm from "vm";
 
 
 
+export function findMaxKeyLength(hierarchy) {
+	return Object.keys(hierarchy).reduce((max, key) => {
+		const childMaxKeyLength = hierarchy[key].children ? findMaxKeyLength(hierarchy[key].children) : 0;
+		return Math.max(max, key.length, childMaxKeyLength);
+	}, 0);
+}
+
 export function getAppHierarchy() {
 	const routes = getAppRoutes();
 	const tree = {};
