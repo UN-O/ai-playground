@@ -206,7 +206,7 @@ export default function SketchApp({ handleSend }) {
 		return {
 			x: (event.clientX - CTM.e) / CTM.a,
 			y: (event.clientY - CTM.f) / CTM.d,
-			pressure: event.pressure
+			pressure: 0.5
 		}
 	}
 
