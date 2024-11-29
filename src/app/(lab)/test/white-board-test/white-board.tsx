@@ -35,7 +35,7 @@ export default function SketchApp({ handleSend }) {
 		if (eraseMode) {
 			eraseStrokes(point)
 		} else {
-			setCurrentStroke([point])	
+			setCurrentStroke([point])
 		}
 		setIsDrawing(true)
 		event.currentTarget.setPointerCapture(event.pointerId)
@@ -106,36 +106,48 @@ export default function SketchApp({ handleSend }) {
 		setHasNewDrawing(true)
 	}, [])
 	const handleCheckClick = async () => {
-		if (svgRef.current) {
-			const svgElement = svgRef.current;
+		if (!svgRef.current) return;
 
-			const exportAsImage = (svgElement, format = 'png', scale = 2) => {
-				return new Promise((resolve, reject) => {
-					if (!['png', 'jpeg', 'gif', 'webp'].includes(format)) {
-						reject(new Error(`Unsupported format: ${format}. Use one of ['png', 'jpeg', 'gif', 'webp'].`));
-						return;
-					}
+		const svgElement = svgRef.current;
 
+		const exportAsImage = (svgElement, format = 'png', scale = 2) => {
+			return new Promise((resolve, reject) => {
+				if (!['png', 'jpeg', 'gif', 'webp'].includes(format)) {
+					reject(new Error(`Unsupported format: ${format}. Use one of ['png', 'jpeg', 'gif', 'webp'].`));
+					return;
+				}
+
+				const rect = svgElement.getBoundingClientRect();
+				const width = rect.width * window.devicePixelRatio; // 適配高分辨率螢幕
+				const height = rect.height * window.devicePixelRatio;
+				const canvas = document.createElement('canvas');
+				const context = canvas.getContext('2d');
+				const img = new Image();
+
+				canvas.width = width * scale;
+				canvas.height = height * scale;
+
+				// 確保畫布初始化為白底
+				context.fillStyle = 'white';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+				context.scale(scale * window.devicePixelRatio, scale * window.devicePixelRatio);
+
+				const serializeSVG = () => {
 					const svgData = new XMLSerializer().serializeToString(svgElement);
-					const canvas = document.createElement('canvas');
-					const context = canvas.getContext('2d');
-					const img = new Image();
 					const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
-					const url = URL.createObjectURL(svgBlob);
+					return URL.createObjectURL(svgBlob);
+				};
 
-					img.onload = () => {
-						const width = svgElement.clientWidth || 300;
-						const height = svgElement.clientHeight || 150;
-						canvas.width = width * scale;
-						canvas.height = height * scale;
+				const loadImage = (src) => {
+					return new Promise((resolve, reject) => {
+						img.onload = () => resolve(img);
+						img.onerror = () => reject(new Error('Failed to load SVG into Image'));
+						img.src = src;
+					});
+				};
 
-						// 加入白底
-						context.fillStyle = 'white';
-						context.fillRect(0, 0, canvas.width, canvas.height);
-
-						context.scale(scale, scale);
-						context.drawImage(img, 0, 0);
-
+				const exportToBlob = () => {
+					return new Promise((resolve, reject) => {
 						canvas.toBlob(
 							(blob) => {
 								if (blob) {
@@ -147,48 +159,50 @@ export default function SketchApp({ handleSend }) {
 							`image/${format}`,
 							1.0 // 高畫質
 						);
-						URL.revokeObjectURL(url);
-					};
+					});
+				};
 
-					img.onerror = () => {
-						URL.revokeObjectURL(url);
-						reject(new Error('Failed to load SVG into Image'));
-					};
+				(async () => {
+					try {
+						const url = serializeSVG();
+						await loadImage(url);
+						context.drawImage(img, 0, 0); // 畫布繪製圖像
+						URL.revokeObjectURL(url); // 清除 URL
+						const blob = await exportToBlob();
+						resolve(blob);
+					} catch (error) {
+						reject(error);
+					}
+				})();
+			});
+		};
 
-					img.src = url;
-				});
-			};
+		const blobToBase64 = (blob) => {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					if (typeof reader.result === 'string') {
+						resolve(reader.result.split(',')[1]);
+					} else {
+						reject(new Error('Failed to convert blob to Base64'));
+					}
+				};
+				reader.onerror = () => reject(new Error('Failed to convert blob to Base64'));
+				reader.readAsDataURL(blob);
+			});
+		};
 
-			try {
-				const blob = await exportAsImage(svgElement, 'png'); // 可調整格式
-
-				// 傳送 Base64 (選擇性)
-				const base64Image = await blobToBase64(blob);
-				handleSend(base64Image);
-				console.log('Base64 Encoded Image:', base64Image);
-
-				setHasNewDrawing(false);
-			} catch (error) {
-				console.error('Error exporting and downloading image:', error);
-			}
+		try {
+			const blob = await exportAsImage(svgElement, 'png', 2); // 可調整格式與縮放比例
+			const base64Image = await blobToBase64(blob); // 將 Blob 轉換為 Base64
+			handleSend(base64Image); // 傳送 Base64 編碼影像
+			console.log('Base64 Encoded Image:', base64Image);
+			setHasNewDrawing(false);
+		} catch (error) {
+			console.error('Error exporting and downloading image:', error);
 		}
 	};
 
-	// 工具函式：Blob 轉 Base64
-	const blobToBase64 = (blob) => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				if (typeof reader.result === 'string') {
-					resolve(reader.result.split(',')[1]);
-				} else {
-					reject(new Error('Failed to convert blob to Base64'));
-				}
-			};
-			reader.onerror = () => reject(new Error('Failed to convert blob to Base64'));
-			reader.readAsDataURL(blob);
-		});
-	};
 
 
 
