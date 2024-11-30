@@ -7,6 +7,7 @@ import { Eraser, Pen, Redo, Undo, RotateCcw } from 'lucide-react'
 import { CheckButton } from "./_components/check-button"
 import { StrokeList } from "./_components/stroke-list"
 import { SVGCanvas } from "./_components/svg-canvas"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface Point {
 	x: number;
@@ -28,6 +29,7 @@ export default function SketchApp({ handleSend }) {
 	const [isDrawing, setIsDrawing] = useState(false)
 	const [eraseMode, setEraseMode] = useState(false)
 	const [hasNewDrawing, setHasNewDrawing] = useState(false)
+	const [myLog, setMylog] = useState({})
 	const svgRef = useRef<SVGSVGElement>(null)
 	const scaleRef = useRef(0.6)
 	const qualityRef = useRef(0.8)
@@ -124,7 +126,7 @@ export default function SketchApp({ handleSend }) {
 				let viewBox = svgElement.viewBox.baseVal;
 
 				let svgWidth: number, svgHeight: number;
-				
+
 				// 檢查 viewBox 是否有效
 				if (viewBox && viewBox.width && viewBox.height) {
 					svgWidth = viewBox.width + Math.abs(viewBox.x);
@@ -141,7 +143,7 @@ export default function SketchApp({ handleSend }) {
 						console.warn('getBBox failed:', e);
 					}
 				}
-				
+
 				// 最後備選，使用 getBoundingClientRect 或直接指定寬高
 				if (!svgWidth || !svgHeight) {
 					const rect = svgElement.getBoundingClientRect();
@@ -149,7 +151,7 @@ export default function SketchApp({ handleSend }) {
 					svgHeight = rect.height;
 					logs.boundingClientRect = rect;
 				}
-				
+
 				// 如果仍無法獲取，提供默認值
 				if (!svgWidth || !svgHeight) {
 					svgWidth = 1000; // 默認寬度
@@ -246,6 +248,7 @@ export default function SketchApp({ handleSend }) {
 
 				img.src = url;
 				logs.imageSourceSet = url;
+				setMylog(logs);
 			});
 		};
 
@@ -277,6 +280,14 @@ export default function SketchApp({ handleSend }) {
 						console.log(
 							`Compression Ratio: ${(1 - blob.size / originalSize) * 100}%`
 						);
+						// download image
+						const url = URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = 'whiteboard-image.webp';
+						a.click();
+						URL.revokeObjectURL(url);
+						
 						return blob;
 					}
 
@@ -351,8 +362,8 @@ export default function SketchApp({ handleSend }) {
 	return (
 		<Card className="w-full h-full max-h-svh mx-auto overflow-hidden select-none touch-none">
 			<CardContent className="p-6 h-full">
-				<div className="flex h-full">
-					<div className="relative flex-grow h-[calc(100%-5rem)]">
+				<div className="flex-col h-full">
+					<div className="relative flex-grow h-[calc(100%-10rem)]">
 						<div className="absolute left-2 top-2 flex flex-col gap-2 z-10">
 							<Button
 								variant={eraseMode ? "outline" : "default"}
@@ -388,6 +399,10 @@ export default function SketchApp({ handleSend }) {
 							eraseMode={eraseMode}
 						/>
 						<CheckButton onCheck={handleCheckClick} hasNewDrawing={hasNewDrawing} />
+
+						<div className="absolute bottom-0 text-xs block text-base truncate w-full h-fit overflow-auto">
+							<pre>{JSON.stringify(myLog, null, 2)}</pre>
+						</div>
 					</div>
 					{/* <div className="ml-4">
             <StrokeList strokes={strokes} onDeleteStroke={handleDeleteStroke} />
