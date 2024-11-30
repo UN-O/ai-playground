@@ -29,7 +29,7 @@ export default function SketchApp({ handleSend }) {
 	const [eraseMode, setEraseMode] = useState(false)
 	const [hasNewDrawing, setHasNewDrawing] = useState(false)
 	const svgRef = useRef<SVGSVGElement>(null)
-	const scaleRef = useRef(0.3)
+	const scaleRef = useRef(0.6)
 	const qualityRef = useRef(0.8)
 
 	const handlePointerDown = useCallback((event: React.PointerEvent<SVGSVGElement>) => {
@@ -121,17 +121,42 @@ export default function SketchApp({ handleSend }) {
 
 				const pixelRatio = window.devicePixelRatio || 1;
 				logs.pixelRatio = pixelRatio;
-
-				// 獲取 viewBox 或使用 getBBox 作為備選
 				let viewBox = svgElement.viewBox.baseVal;
-				if (!viewBox.width || !viewBox.height) {
-					viewBox = svgElement.getBBox(); // 如果 viewBox 無效，使用 getBBox
-				}
-				logs.viewBox = viewBox;
 
-				// 獲取完整的 SVG 寬高
-				const svgWidth = viewBox.width + Math.abs(viewBox.x);
-				const svgHeight = viewBox.height + Math.abs(viewBox.y);
+				let svgWidth: number, svgHeight: number;
+				
+				// 檢查 viewBox 是否有效
+				if (viewBox && viewBox.width && viewBox.height) {
+					svgWidth = viewBox.width + Math.abs(viewBox.x);
+					svgHeight = viewBox.height + Math.abs(viewBox.y);
+					logs.viewBox = viewBox;
+				} else {
+					// 如果 viewBox 無效，嘗試使用 getBBox
+					try {
+						const bbox = svgElement.getBBox();
+						svgWidth = bbox.width + Math.abs(bbox.x);
+						svgHeight = bbox.height + Math.abs(bbox.y);
+						logs.getBBox = bbox;
+					} catch (e) {
+						console.warn('getBBox failed:', e);
+					}
+				}
+				
+				// 最後備選，使用 getBoundingClientRect 或直接指定寬高
+				if (!svgWidth || !svgHeight) {
+					const rect = svgElement.getBoundingClientRect();
+					svgWidth = rect.width;
+					svgHeight = rect.height;
+					logs.boundingClientRect = rect;
+				}
+				
+				// 如果仍無法獲取，提供默認值
+				if (!svgWidth || !svgHeight) {
+					svgWidth = 1000; // 默認寬度
+					svgHeight = 1000; // 默認高度
+					logs.defaultSizeUsed = true;
+				}
+
 				logs.svgDimensions = { width: svgWidth, height: svgHeight };
 
 				// 設置 canvas 寬高，確保整個範圍都被捕捉
