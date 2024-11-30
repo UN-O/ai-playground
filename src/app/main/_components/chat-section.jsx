@@ -66,8 +66,8 @@ export default function ChatRoom({ title, children, toolResultRender = [] }) {
 
                 </div>
             </CardHeader>
-            <CardContent className="flex-grow overflow-hidden">
-                <ScrollArea className="h-full pr-4">
+            <CardContent className="flex-grow overflow-hidden pr-3">
+                <ScrollArea className="h-full pr-3">
                     <div ref={scrollAreaRef} className="h-full flex justify-center w-full">
                         <div className="max-w-[60rem] w-full gap-2 items-center">
                             {messageOrder.map((id) => (

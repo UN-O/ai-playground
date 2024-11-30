@@ -17,31 +17,31 @@ const config: Config = {
 				foreground: "hsl(var(--foreground))",
 				card: {
 					DEFAULT: "hsl(var(--card))",
-					foreground: "hsl(var(--card-foreground))"
+					foreground: "hsl(var(--card-foreground))" // 給字形使用
 				},
 				popover: {
 					DEFAULT: "hsl(var(--popover))",
-					foreground: "hsl(var(--popover-foreground))"
+					foreground: "hsl(var(--popover-foreground))" // 給字形使用
 				},
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
-					foreground: "hsl(var(--primary-foreground))"
+					foreground: "hsl(var(--primary-foreground))" // 給字形使用
 				},
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
-					foreground: "hsl(var(--secondary-foreground))"
+					foreground: "hsl(var(--secondary-foreground))" // 給字形使用
 				},
 				muted: {
 					DEFAULT: "hsl(var(--muted))",
-					foreground: "hsl(var(--muted-foreground))"
+					foreground: "hsl(var(--muted-foreground))" // 給字形使用
 				},
 				accent: {
 					DEFAULT: "hsl(var(--accent))",
-					foreground: "hsl(var(--accent-foreground))"
+					foreground: "hsl(var(--accent-foreground))" // 給字形使用
 				},
 				destructive: {
 					DEFAULT: "hsl(var(--destructive))",
-					foreground: "hsl(var(--destructive-foreground))"
+					foreground: "hsl(var(--destructive-foreground))" // 給字形使用
 				},
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

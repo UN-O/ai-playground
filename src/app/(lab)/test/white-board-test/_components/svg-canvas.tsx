@@ -51,7 +51,7 @@ export const SVGCanvas = forwardRef<SVGSVGElement, SVGCanvasProps>(
             d={getPathFromStroke(stroke.points)}
             fill="none"
             stroke="black"
-            strokeWidth={stroke.points[0].pressure * 8}
+            strokeWidth={stroke.points[0].pressure * 4}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -60,7 +60,7 @@ export const SVGCanvas = forwardRef<SVGSVGElement, SVGCanvasProps>(
           d={getPathFromStroke(currentStroke)}
           fill="none"
           stroke="black"
-          strokeWidth={currentStroke[0]?.pressure * 8 || 4}
+          strokeWidth={currentStroke[0]?.pressure * 4 || 3}
           strokeLinecap="round"
           strokeLinejoin="round"
         />

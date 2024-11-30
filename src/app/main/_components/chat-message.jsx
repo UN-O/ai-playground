@@ -53,7 +53,7 @@ const ChatMessage = React.memo(({ id, toolResultRender }) => {
     // 僅訂閱特定訊息，避免不必要的全局更新
     const message = useMessageStore((state) => state.messages[id]);
 
-    const messageClassName = `p-3 rounded-lg ${message.role !== "user" ? "bg-primary text-primary-foreground" : "bg-secondary"}`;
+    const messageClassName = `p-3 rounded-lg ${message.role !== "user" ? "bg-foreground text-background" : "bg-secondary"}`;
     // 
     if (message.role === "system") {
         return null;
@@ -64,8 +64,8 @@ const ChatMessage = React.memo(({ id, toolResultRender }) => {
             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mb-4 gap-2`}
         >
             {message.role !== "user" ? (
-                <Avatar className="bg-red-500">
-                    <AvatarFallback className="text-white bg-red-500">{message?.name || "AI"}</AvatarFallback>
+                <Avatar className="bg-primary">
+                    <AvatarFallback className="text-white bg-primary">{message?.name || "AI"}</AvatarFallback>
                 </Avatar>
             ) : null}
             <div className="flex flex-col">
@@ -86,11 +86,11 @@ const ChatMessage = React.memo(({ id, toolResultRender }) => {
                         </div>
                     )}
             </div>
-            {message.role === "user" ? (
+            {/* {message.role === "user" ? (
                 <Avatar className="bg-blue-500">
                     <AvatarFallback className="text-white bg-blue-500">U</AvatarFallback>
                 </Avatar>
-            ) : null}
+            ) : null} */}
         </div>
     );
 }, (prevProps, nextProps) => {

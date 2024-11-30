@@ -29,7 +29,7 @@ export default function SketchApp({ handleSend }) {
 	const [eraseMode, setEraseMode] = useState(false)
 	const [hasNewDrawing, setHasNewDrawing] = useState(false)
 	const svgRef = useRef<SVGSVGElement>(null)
-	const scaleRef = useRef(1)
+	const scaleRef = useRef(0.3)
 	const qualityRef = useRef(0.8)
 
 	const handlePointerDown = useCallback((event: React.PointerEvent<SVGSVGElement>) => {
@@ -81,10 +81,12 @@ export default function SketchApp({ handleSend }) {
 	}, [])
 
 	const handleEraserClick = useCallback(() => {
+		setIsDrawing(false)
 		setEraseMode(true)
 	}, [])
 
 	const handlePenClick = useCallback(() => {
+		setIsDrawing(false)
 		setEraseMode(false)
 	}, [])
 
@@ -113,52 +115,118 @@ export default function SketchApp({ handleSend }) {
 
 		const svgElement = svgRef.current;
 
-		const exportAsImage = async (svgElement, format = 'webp', scale = 2, quality = 1.0) => {
-			return new Promise(async (resolve, reject) => {
-				const rect = svgElement.getBoundingClientRect();
-				const width = rect.width;
-				const height = rect.height;
-				const canvas = document.createElement('canvas');
-				const context = canvas.getContext('2d');
-				const img = new Image();
+		const exportAsImage = async (svgElement, format = 'webp', scale = 1, quality = 1.0) => {
+			return new Promise((resolve, reject) => {
+				const logs: any = {}; // 用於記錄所有步驟資訊
 
-				canvas.width = width * scale * window.devicePixelRatio;
-				canvas.height = height * scale * window.devicePixelRatio;
+				const pixelRatio = window.devicePixelRatio || 1;
+				logs.pixelRatio = pixelRatio;
 
-				// 保證正確繪製比例
-				context.scale(scale, scale);
-
-				// 確保 SVG 有 viewBox
-				if (!svgElement.hasAttribute('viewBox')) {
-					const bbox = svgElement.getBBox();
-					svgElement.setAttribute('viewBox', `0 0 ${bbox.width} ${bbox.height}`);
+				// 獲取 viewBox 或使用 getBBox 作為備選
+				let viewBox = svgElement.viewBox.baseVal;
+				if (!viewBox.width || !viewBox.height) {
+					viewBox = svgElement.getBBox(); // 如果 viewBox 無效，使用 getBBox
 				}
+				logs.viewBox = viewBox;
+
+				// 獲取完整的 SVG 寬高
+				const svgWidth = viewBox.width + Math.abs(viewBox.x);
+				const svgHeight = viewBox.height + Math.abs(viewBox.y);
+				logs.svgDimensions = { width: svgWidth, height: svgHeight };
+
+				// 設置 canvas 寬高，確保整個範圍都被捕捉
+				const canvas = document.createElement('canvas');
+				canvas.width = svgWidth; // 固定像素大小
+				canvas.height = svgHeight;
+				logs.canvasDimensions = { width: canvas.width, height: canvas.height };
+
+				const context = canvas.getContext('2d');
+
+				// 填充背景，避免透明
+				context.fillStyle = 'white';
+				context.fillRect(0, 0, canvas.width, canvas.height);
+				logs.backgroundFilled = true;
 
 				// 序列化 SVG
 				const svgData = new XMLSerializer().serializeToString(svgElement);
+				logs.serializedSvg = svgData;
+
 				const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
 				const url = URL.createObjectURL(svgBlob);
+				logs.blobUrl = url;
 
+				const img = new Image();
 				img.onload = () => {
-					context.drawImage(img, 0, 0, canvas.width, canvas.height);
-					URL.revokeObjectURL(url);
-					canvas.toBlob(
-						(blob) => {
-							if (blob) {
-								resolve(blob);
-							} else {
-								reject(new Error('Canvas toBlob failed'));
-							}
-						},
-						`image/${format}`,
-						quality
-					);
+					logs.imageLoaded = { width: img.width, height: img.height };
+
+					// 繪製圖片到 canvas，考慮縮放
+					const scaleX = canvas.width / (svgWidth / scale);
+					const scaleY = canvas.height / (svgHeight / scale);
+					logs.scaleFactors = { scaleX, scaleY };
+
+					// context.scale(scaleX, scaleY); // 確保內容按比例縮放
+					context.drawImage(img, 0, 0, svgWidth, svgHeight); // 繪製整個範圍
+					logs.imageDrawn = true;
+
+					if (scale !== 1) {
+						const scaledCanvas = document.createElement('canvas');
+						scaledCanvas.width = canvas.width * scale;
+						scaledCanvas.height = canvas.height * scale;
+
+						const scaledContext = scaledCanvas.getContext('2d');
+						scaledContext.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+						logs.scaledCanvasDimensions = { width: scaledCanvas.width, height: scaledCanvas.height };
+
+						// 將縮放後的 canvas 輸出為圖片
+						scaledCanvas.toBlob(
+							(blob) => {
+								if (blob) {
+									logs.blobGenerated = true;
+									console.log('Export Logs:', logs);
+									resolve(blob);
+								} else {
+									logs.error = 'Canvas toBlob failed';
+									console.error('Export Logs (with error):', logs);
+									reject(new Error('Canvas toBlob failed'));
+								}
+							},
+							`image/${format}`,
+							quality
+						);
+					} else {
+						// 若無需縮放，直接輸出原始 canvas
+						canvas.toBlob(
+							(blob) => {
+								if (blob) {
+									logs.blobGenerated = true;
+									console.log('Export Logs:', logs);
+									resolve(blob);
+								} else {
+									logs.error = 'Canvas toBlob failed';
+									console.error('Export Logs (with error):', logs);
+									reject(new Error('Canvas toBlob failed'));
+								}
+							},
+							`image/${format}`,
+							quality
+						);
+					}
 				};
 
-				img.onerror = (e) => reject(new Error('Failed to load SVG into Image'));
+				img.onerror = (e) => {
+					logs.imageLoadError = e;
+					console.error('Export Logs (with error):', logs);
+					reject(new Error('Failed to load SVG into Image'));
+				};
+
 				img.src = url;
+				logs.imageSourceSet = url;
 			});
 		};
+
+
+
+
 
 
 		const compressImageToFit = async (svgElement, targetFileSize = 7.5 * 1024) => {
@@ -171,6 +239,7 @@ export default function SketchApp({ handleSend }) {
 			while (scale > 0.1) {
 				try {
 					blob = await exportAsImage(svgElement, format, scale, quality);
+					console.log(`File Size: ${blob.size / 1024} KB`);
 
 					// 記錄原始檔案大小
 					if (!originalSize) {
@@ -187,19 +256,20 @@ export default function SketchApp({ handleSend }) {
 					}
 
 					// 若檔案過大，降低品質或縮放比例
-					quality -= 0.1;
+					quality -= 0.2;
 					if (quality < 0.1) {
-						quality = 1.0;
-						scale -= 0.1;
+						quality = 0.8;
+						scale -= 0.2;
 					}
+					scaleRef.current = scale;
+					qualityRef.current = quality;
 				} catch (error) {
 					console.error('Compression failed:', error);
 					break;
 				}
 			}
 
-			scaleRef.current = scale;
-			qualityRef.current = quality;
+
 
 			throw new Error('Unable to compress image to fit within the specified file size.');
 		};
@@ -220,7 +290,7 @@ export default function SketchApp({ handleSend }) {
 		};
 
 		try {
-			const compressedBlob = await compressImageToFit(svgElement, 7.5 * 1024); // 壓縮至 7.5 KB
+			const compressedBlob = await compressImageToFit(svgElement, 10 * 1024); // 壓縮至 7.5 KB
 			const base64Image = await blobToBase64(compressedBlob);
 			handleSend(base64Image); // 傳送壓縮後的 Base64 編碼影像
 			console.log('Compressed Base64 Encoded Image:', base64Image);
@@ -254,7 +324,7 @@ export default function SketchApp({ handleSend }) {
 	}
 
 	return (
-		<Card className="w-full h-full max-h-svh max-w-4xl mx-auto overflow-hidden select-none touch-none">
+		<Card className="w-full h-full max-h-svh mx-auto overflow-hidden select-none touch-none">
 			<CardContent className="p-6 h-full">
 				<div className="flex h-full">
 					<div className="relative flex-grow h-[calc(100%-5rem)]">
