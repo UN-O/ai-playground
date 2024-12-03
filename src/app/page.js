@@ -25,6 +25,7 @@ export default function HomePage() {
 				<div className="grid gap-y-2 font-mono">
 					{renderHierarchy({ hierarchy, maxKeyLength })}
 				</div>
+				<img src="https://utfs.io/f/yfUUJ4a80LkKrtdjDOb3TBP0Ebjlmd8WR71VnMCDSao5AFeh" />
 			</WrapperLayout>
 		</main>
     );
