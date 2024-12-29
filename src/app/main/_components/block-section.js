@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
-import { useTools } from '../_hooks/tools-provider';
-import { useMessageStore } from './message-store';
+import { useToolsStore } from './tools-store';
+import { useMessagesStore } from './messages-store';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -12,8 +12,10 @@ import { toolsConfig } from './tools-config';
 
 
 const ToolRenderer = ({ executeConversation }) => {
-    const { activeToolId, toolResult, activeResult, setOpenBlock } = useTools();
-    const setInput = useMessageStore((state) => state.setInput);
+	
+	const { activeToolId, setOpenBlock } = useToolsStore();
+	const toolName = useToolsStore().getActiveResult()?.toolName;
+
     const scrollAreaRef = useRef(null)
 
     const scrollToButton = () => {
@@ -24,17 +26,17 @@ const ToolRenderer = ({ executeConversation }) => {
         if (scrollAreaRef.current) {
             scrollToButton();
         }
-    }, [activeResult])
+    }, [activeToolId])
 
 
     if (!activeToolId) {
         return null;
     }
 
-    const ToolComponent = toolsConfig[activeResult.toolName]?.component;
+    const ToolComponent = toolsConfig[toolName]?.component;
 
     if (!ToolComponent) {
-        return <div>Unknown tool: {activeResult}</div>;
+        return <div>Unknown tool: {toolName}</div>;
     }
 
     // TODO: become tabs
@@ -53,7 +55,7 @@ const ToolRenderer = ({ executeConversation }) => {
             <CardContent className="flex-grow overflow-hidden px-3 pl-5">
                 <ScrollArea className="h-full w-full">
                     <div ref={scrollAreaRef} className="h-full w-full">
-                        <ToolComponent result={activeResult.result} executeConversation={executeConversation}/>
+                        <ToolComponent id={activeToolId} executeConversation={executeConversation}/>
                     </div>
                 </ScrollArea>
             </CardContent>

@@ -1,4 +1,4 @@
-import { useTools } from '../_hooks/tools-provider'; // 跟前端互動，裡面有 tool action 跟目前 tool 的結果 state
+import { useToolsStore } from './tools-store';
 
 import { RenderMarkdown } from "@/utils/rendering"
 import EquaComponent from "./tool-call/equa-component"
@@ -87,7 +87,7 @@ export function ToolCall({ toolName, args }) {
 
 export function ToolResult({ toolName, result, toolCallId, isError, toolResultRender }) {
 
-    const { setActiveTabById, setOpenBlock } = useTools();
+    const { setActiveToolId, setOpenBlock } = useToolsStore();
 
     if (toolResultRender?.length > 0) {
         console.log("i get here");
@@ -101,7 +101,7 @@ export function ToolResult({ toolName, result, toolCallId, isError, toolResultRe
                 className='p-2 h-fit font-mono text-xs'
                 variant='outline'
                 onClick={() => {
-                    setActiveTabById(toolCallId)
+                    setActiveToolId(toolCallId)
                     setOpenBlock(true)
                 }}
             >

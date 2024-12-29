@@ -7,31 +7,6 @@
 - 區塊工具（Block Tool）的開啟、更新與互動操作。
 - 結合即時聊天與工具結果展示的整合平台。
 
-```mermaid
-graph TD
-    %% User Interaction
-    A[使用者輸入訊息] -->|點擊送出| B[ChatInput]
-    B --> C[submitInput 呼叫 Message Store 儲存訊息]
-    C --> D[continueConversation]
-    D -->|傳遞訊息至 OpenAI API| E[AI 回應]
-
-    %% Message Handling
-    E -->|文本訊息| F[更新 Message Store]
-    E -->|工具執行| G[判斷工具名稱]
-    G -->|需要工具| H[Tools Config 驗證參數]
-    H -->|執行工具動作| I[工具返回結果]
-
-    %% Tool Execution
-    I -->|工具結果: 文本| F
-    I -->|工具結果: 區塊工具| J[更新 Tools Provider 狀態]
-    J --> K[渲染工具結果]
-
-    %% Block Tool Handling
-    K -->|文本結果| L[ChatSection]
-    K -->|區塊工具結果| M[BlockSection]
-    M -->|支持分頁或更新| N[展示工具內容]
-```
-
 
 ## TODO
 ### 功能開發
@@ -116,19 +91,54 @@ graph TD
 - **[Rehype-KaTeX](https://github.com/remarkjs/rehype-katex)**：將數學公式轉為 KaTeX 格式渲染。
 - **[Rehype-Raw](https://github.com/rehypejs/rehype-raw)**：支持 HTML 標籤的解析。
 
-### 代碼高亮
-- **[React-Syntax-Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)**：用於代碼高亮的工具。
-
 ### 化學結構渲染
 - **[React-Chemdoodle](https://github.com/malgosh/chemdoodle-react)**：用於顯示化學結構圖的 React 工具。
 
-### 其他工具與輔助
-- **[Class-Variance-Authority](https://github.com/joe-bell/cva)**：簡化條件樣式組合的工具。
-- **[Clsx](https://github.com/lukeed/clsx)**：條件性合併類別的輔助工具。
-- **[FS](https://nodejs.org/api/fs.html)**：Node.js 的文件系統 API。
-- **[Path](https://nodejs.org/api/path.html)**：Node.js 的路徑處理模組。
 
-### 開發與測試工具
-- **TypeScript**：強類型的 JavaScript 超集，用於提高代碼質量。
-- **ESLint**：用於代碼風格檢查。
-- **Prettier**：用於代碼格式化。
+---
+
+## 更新紀錄 2024/12/29
+
+此次更新帶來以下改進：
+
+#### 1. 使用 **Zustand** 管理應用程式狀態
+- 全面採用 Zustand 作為狀態管理工具，提供簡潔且高效的狀態處理方式。
+
+#### 2. 重構 **Chat Manager**
+- 將所有與 Streaming 處理相關的邏輯集中在 `ChatManager` 程式模組中，以提升程式結構的可維護性和邏輯清晰度。
+
+#### 3. 新增 **Streaming Mockup**
+- 增加一個模擬 Streaming 的功能，用於生成非 OpenAI 來源的 Streaming 資料，便於測試與開發。
+
+#### 4. 提升渲染效率
+- **優化 Message List 結構**：  
+  - 將 Message List 從 Array 改為 Object，並使用唯一的 Key 存儲每個 Message。
+  - Zustand 的 `selector` 只會針對改變的特定 Key 進行狀態更新，避免觸發整體重新渲染，大幅提升渲染性能。
+
+#### 5. 增加 **Debounce 與 Throttle 機制**
+- **Streaming 頻率調整**：
+  - 將 Streaming 更新頻率從約 100 Hz 降至 20 Hz（每 50 ms 更新一次）。
+  - 減少前端的高頻更新負載，避免其他低更新頻率的操作因狀態阻塞而延遲。
+  - 確保前端界面在高頻 Streaming 資料傳輸下仍保持流暢運作。
+
+---
+
+### 接下來的 TODO
+
+以下為開發的下一步計畫：
+
+#### 1. **狀態管理的進一步優化**
+- 增加 Zustand 的初始化設定，確保所有狀態有一致的初始值。
+- 設計 Zustand 與資料庫之間的互動機制，實現狀態與資料同步更新。
+
+#### 2. **狀態顯示的改進**
+- 在 Tool 的結果輸出時，增加一個 `status` 屬性，用於顯示當前工具是否仍在 Streaming。
+- 提供明確的狀態回饋，讓使用者了解有資料仍在傳輸過程中。
+
+#### 3. **使用者輸入行為的優化**
+- 探討在 `loading` 狀態時，是否需要禁止使用者的輸入操作。
+- 確保狀態管理與使用者輸入的關係符合預期且操作直覺。
+
+#### 4. **Chat Manager 的多工具管理**
+- 使 `ChatManager` 能夠同時管理多個工具（Tool），而非僅針對單一工具進行處理。
+- 從系統的 Configuration 設定中動態抓取可用的工具清單，並實現多工具的統一管理邏輯。

@@ -1,5 +1,5 @@
 import StepAnswer from './tool-result/step-answer';
-import { generateStepTool } from '../actions';
+import { generateStepTool } from '../exam-block/actions';
 import { z } from 'zod';
 
 

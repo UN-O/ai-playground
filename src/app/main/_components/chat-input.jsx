@@ -1,13 +1,13 @@
 import { useRef, useEffect } from "react";
-import { useMessageStore } from "./message-store";
+import { useMessagesStore } from "./messages-store";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 
 export default function ChatInput({ handleSubmit }) {
     const textAreaRef = useRef(null);
-    const input = useMessageStore((state) => state.input);
-    const setInput = useMessageStore((state) => state.setInput);
+    const input = useMessagesStore((state) => state.input);
+    const setInput = useMessagesStore((state) => state.setInput);
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
