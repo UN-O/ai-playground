@@ -1,4 +1,4 @@
-import { useToolsStore } from './tools-store';
+import { useToolsStore } from '../_utils/tools-store';
 
 import { RenderMarkdown } from "@/utils/rendering"
 import EquaComponent from "./tool-call/equa-component"

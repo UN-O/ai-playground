@@ -1,6 +1,6 @@
 import React from "react"
 
-import { useMessagesStore } from "./messages-store";
+import { useMessagesStore } from "../_utils/messages-store";
 import { ToolCall, ToolResult } from "./chat-tool"
 import { motion } from 'framer-motion';
 

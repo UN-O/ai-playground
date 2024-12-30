@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from "react"
-import { useToolsStore } from './tools-store';
-import { useMessagesStore } from "./messages-store";
+import { useToolsStore } from '../_utils/tools-store';
+import { useMessagesStore } from "../_utils/messages-store";
+import { useChatStore } from '../_utils/chat-store';
 import { AnimatePresence } from 'framer-motion';
 
 import { ChatMessage, ThinkingMessage } from "./chat-message"
@@ -18,7 +19,7 @@ export default function ChatRoom({ title, children, toolResultRender = [] }) {
 	const messageOrder = useMessagesStore((state) => state.messageOrder);
 	const getMessagesAsArray = useMessagesStore((state) => state.getMessagesAsArray);
 	const clearMessages = useMessagesStore((state) => state.clearMessages);
-	const isLoading = useMessagesStore((state) => state.isLoading);
+	const isLoading = useChatStore((state) => state.isLoading);
 
 	const { clearTools } = useToolsStore();
 

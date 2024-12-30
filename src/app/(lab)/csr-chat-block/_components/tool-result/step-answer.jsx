@@ -1,7 +1,7 @@
 "use client"; // <-- 在 Next.js 13+ 的 App Router 環境中使用 client component
 import { useState } from 'react';
-import { useMessagesStore } from '../messages-store';
-import { useToolsStore } from '../tools-store';
+import { useMessagesStore } from '../../_utils/messages-store';
+import { useToolsStore } from '../../_utils/tools-store';
 
 import { RenderMarkdown } from "@/utils/rendering"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";

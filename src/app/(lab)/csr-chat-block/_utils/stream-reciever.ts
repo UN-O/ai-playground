@@ -2,8 +2,7 @@ import { useMessagesStore } from './messages-store';
 import { useToolsStore } from './tools-store';
 import { readStreamableValue, StreamableValue } from 'ai/rsc';
 import { CoreMessage, CoreToolMessage, ToolCallPart, ToolResultPart, TextPart } from 'ai';
-import { toolsConfig } from './tools-config';
-
+import { toolsConfig } from '../_lib/ai/tools-config';
 
 /**
  * 固定時間間隔地「批次處理」呼叫參數。
@@ -44,8 +43,14 @@ function throttleBuffer<T extends (...args: any[]) => void>(
   }
   
 
-
-
+/**
+ * 接收一個 StreamableValue，並將其內容解析成物件(用 zod 來 parsing)，然後逐一更新 zustand state。
+ * 
+ * @param streamValue - 要接收的 StreamableValue。
+ * @param toolName - 工具名稱。
+ * @param toolCallId - 工具呼叫 ID。
+ * @returns - 無。
+ */
 export const recieveObjectStream = async (streamValue: StreamableValue<any, any>, toolName: string, toolCallId: string) => {
 
 	const { schema, type } = toolsConfig[toolName];
@@ -83,14 +88,17 @@ export const recieveObjectStream = async (streamValue: StreamableValue<any, any>
 	})();
 }
 
-
-export const recieveStream = async (streamValue: StreamableValue<any, any>) => {
-
-
+/**
+ * 接收一個 StreamableValue，並將其內容解析成訊息，然後逐一更新 zustand state。
+ * 
+ * @param streamValue - 要接收的 StreamableValue。
+ * @returns - 無。
+ */
+export const recieveStream = async (streamValue: StreamableValue<any, any>, executeTool: any) => {
 
 	const appendMessage = useMessagesStore.getState().appendMessage;
 
-	// 設定一個比較適合的 interval，假如 50ms => 20次/秒
+	// 設定一個比較適合的 interval，避免過於頻繁地更新 state
 	const throttledAppend = throttleBuffer(
 		(calls: [ CoreMessage[]]) => {
 			// 這裡 calls 可能是一批多筆，但大多情況下只需要拿最後一筆即可
@@ -99,10 +107,8 @@ export const recieveStream = async (streamValue: StreamableValue<any, any>) => {
 				appendMessage(message);
 			}
 		},
-		20
+		20 // interval: 20ms => 大約50fps更新
 	);
-
-	const executeTool = useToolsStore.getState().executeTool;
 
 	let textContent: Array<TextPart | ToolCallPart> = [];
 	let toolResults: ToolResultPart[] = [];
@@ -120,7 +126,7 @@ export const recieveStream = async (streamValue: StreamableValue<any, any>) => {
 							textContent.push({ type: 'text', text: part.textDelta });
 						}
 						throttledAppend({ role: 'assistant', content: textContent });
-						console.log('text-delta', textContent);
+						// console.log('text-delta', textContent);
 						break;
 					case 'tool-call':
 						const toolCallPart: ToolCallPart = {
@@ -132,19 +138,13 @@ export const recieveStream = async (streamValue: StreamableValue<any, any>) => {
 						textContent.push(toolCallPart);
 						appendMessage({ role: 'assistant', content: textContent });
 
-						if (toolCallPart.toolName === 'create_step_block') {
-
-							(async () => {
-								try {
-									const { streamValue } = await executeTool(part.toolName, toolCallPart.args, part.toolCallId);
-
-									await recieveObjectStream(streamValue, part.toolName, part.toolCallId);
-
-								} catch (error) {
-									console.error('Error in create_step_block tool processing:', error);
-								}
+						// 如果是 streaming tool 就去接收 stream
+						if (toolsConfig[part.toolName]?.is_stream) {
+							try {
+								executeTool(part.toolName, toolCallPart.args, part.toolCallId);
+							} catch (error) {
+								console.error('Error in create_step_block tool processing:', error);
 							}
-							)();
 						}
 
 						  
@@ -183,5 +183,3 @@ export const recieveStream = async (streamValue: StreamableValue<any, any>) => {
 		}
 	})();
 };
-// Add a comment to explain the purpose of the import
-// This import is used to receive streams in the chat section

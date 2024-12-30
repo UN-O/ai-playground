@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { toolsConfig } from './tools-config';
+import { toolsConfig } from '../_lib/ai/tools-config';
 import { readStreamableValue } from 'ai/rsc';
 
 interface ToolResult {
@@ -16,7 +16,7 @@ interface ToolsState {
 	setActiveToolId: (id: string | null) => void;
 	setOpenBlock: (value: boolean) => void;
 	clearTools: () => void;
-	executeTool: (toolName: string, args: any, toolId: string) => any; // 執行工具
+	initToolResult: (toolName: string, toolId: string) => any; // 執行工具
 }
 
 export const useToolsStore = create<ToolsState>((set, get) => ({
@@ -47,7 +47,7 @@ export const useToolsStore = create<ToolsState>((set, get) => ({
 			toolResults: {} as Record<string, ToolResult>,
 			openBlock: false,
 		})),
-	executeTool: async (toolName, args, toolId) => {
+	initToolResult : (toolName, toolId) => {
 		const tool = toolsConfig[toolName];
 
 		if (!tool) {
@@ -69,7 +69,6 @@ export const useToolsStore = create<ToolsState>((set, get) => ({
 				},
 				activeToolId: toolId,
 			}));
-			return await tool.action(args);
 		} catch (error) {
 			console.error(`Error in tool ${toolName}:`, error);
 		}

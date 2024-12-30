@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react"
-import { useToolsStore } from './tools-store';
-import { useMessagesStore } from './messages-store';
+import { useToolsStore } from '../_utils/tools-store';
+import { useMessagesStore } from '../_utils/messages-store';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-import { toolsConfig } from './tools-config';
+import { toolsConfig } from '../_lib/ai/tools-config';
 
 
 
