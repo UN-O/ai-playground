@@ -1,9 +1,9 @@
 "use client";
-
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { EquationProp } from "./equation";
-import Plot from "react-plotly.js";
 import "./plot.css"
+const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 export const EquaComponent = ({ eqution, input }: { eqution?: EquationProp, input?: string }) => {
     const [showAdvance, setShowAdvance] = useState(false);

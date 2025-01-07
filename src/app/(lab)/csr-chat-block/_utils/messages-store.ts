@@ -9,6 +9,8 @@ interface MessageState {
     messages: Record<string, CoreMessage>; // 以 id 為 key 儲存訊息
     messageOrder: string[]; // 儲存訊息的順序
     input: string; // 用戶輸入
+	isLoading: boolean;
+	setIsLoading: (value: boolean) => void;
     appendMessage: (message: CoreMessage) => void;
     clearMessages: () => void;
     setInput: (value: string) => void;
@@ -16,17 +18,20 @@ interface MessageState {
     submitInput: () => Promise<CoreMessage | null>; // 新增的提交方法
 }
 
-export const useMessageStore = create<MessageState>((set, get) => ({
+
+export const useMessagesStore = create<MessageState>((set, get) => ({
     messages: {} as Record<string, CoreMessage>,
     messageOrder: [],
     input: "",
+	isLoading: false,
+	setIsLoading: (value) => set(() => ({ isLoading: value })),
     clearMessages: () =>
         set(() => ({
             messages: {} as Record<string, CoreMessage>,
             messageOrder: [],
         })),
     appendMessage: (message) => {
-        const id = nanoid(); // 生成唯一 id
+        
         set((state) => {
             const { messages, messageOrder } = state;
 
@@ -46,6 +51,7 @@ export const useMessageStore = create<MessageState>((set, get) => ({
             }
 
             // 否則，新增新訊息
+			const id = nanoid(); // 生成唯一 id
             return {
                 messages: {
                     ...messages,
