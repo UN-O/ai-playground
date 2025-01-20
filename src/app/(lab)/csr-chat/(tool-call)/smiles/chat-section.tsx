@@ -49,6 +49,7 @@ export default function ChatSection() {
             for await (const part of readStreamableValue(streamValue)) {
                 switch (part.type) {
                     case 'text-delta': {
+                        console.log("text-delta called.")
                         const lastPart = textContent[textContent.length - 1];
                         if (lastPart && lastPart.type === 'text') {
                             lastPart.text += part.textDelta;  // 將新內容追加到現有的 TextPart
@@ -61,6 +62,8 @@ export default function ChatSection() {
                     }
 
                     case 'tool-call': {
+                        console.log("tool-call called.")
+                        console.log(part);
                         const toolCallPart: ToolCallPart = {
                             type: 'tool-call',
                             toolCallId: part.toolCallId,
@@ -72,6 +75,8 @@ export default function ChatSection() {
                         break;
                     }
                     case 'tool-result': {
+                        console.log("tool-result called.")
+                        console.log(part);
                         const ToolResultPart: ToolResultPart = {
                             type: 'tool-result',
                             toolCallId: part.toolCallId,
@@ -89,6 +94,14 @@ export default function ChatSection() {
 
                         appendMessage(toolMessage);
 
+                        if (part.toolName === 'generate_smiles_script') {
+                            toolResults.push({
+                                toolName: 'generate_smiles_script',
+                                title: part.result.smiles,
+                                smiles: part.result.smiles,
+                                render: part.result.render,
+                            })
+                        }
                         toolResults.push(ToolResultPart);
                         break;
                     }
@@ -114,7 +127,18 @@ export default function ChatSection() {
             messages={messages}
             setMessages={setMessages}
             title={"Plot Chemdoodle chat room"}
-            toolResultRender={[{ toolName: "generate_smiles_script", component: SmilePlot }]}
+            toolResultRender={[
+                { 
+                toolName: "generate_smiles_script", 
+                component: ({ result }) => (
+                    <SmilePlot
+                        title={result.title}
+                        smiles={result.smiles}
+                        render={result.render}
+                    />
+                )
+            },
+            ]}
         >
             <ChatInput input={input} setInput={setInput} handleSubmit={handleSubmit} />
         </ChatRoom>

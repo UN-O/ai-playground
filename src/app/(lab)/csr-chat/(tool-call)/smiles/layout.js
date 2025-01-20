@@ -1,7 +1,7 @@
 // Metadata
 export const metadata = {
     title: "Tool Result - Chemdoodle plot",
-    description: "?????????????. (SSC)",
+    description: "Draw Chemical Plot for You! (SSC)",
 };
 
 

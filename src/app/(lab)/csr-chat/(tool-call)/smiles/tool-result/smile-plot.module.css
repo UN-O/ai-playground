@@ -1,0 +1,31 @@
+.viewModeSelect {
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .viewModeSelect:hover {
+    border-color: #8e44ad;
+    box-shadow: 0 0 8px rgba(142, 68, 173, 0.6);
+  }
+  
+  .renderButton {
+    margin-left: 10px;
+    background: linear-gradient(45deg, #3498db, #8e44ad);
+    color: #ffffff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+  }
+  .renderButton:hover {
+    transform: scale(1.05);
+  }
+  

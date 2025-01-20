@@ -1,0 +1,93 @@
+/* Container Styling */
+.chemdoodleContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #8e44ad, #3498db);
+    font-family: 'Arial', sans-serif;
+    color: white;
+}
+
+/* Card Styling */
+.chemdoodleCard {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    max-width: 400px;
+    text-align: center;
+    color: #333;
+}
+
+/* Header Styling */
+.chemdoodleHeader {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.chemdoodleHeader h1 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.chemdoodleHeader p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Input Styling */
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.inputLabel {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.inputSmiles, .inputSelect {
+    padding: 10px;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.inputSmiles:focus, .inputSelect:focus {
+    border-color: #8e44ad;
+    box-shadow: 0 0 8px rgba(142, 68, 173, 0.6);
+}
+
+.renderButton {
+    background: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.renderButton:hover {
+    background: #8e44ad;
+    box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+}
+
+/* Canvas Container */
+.canvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background: #f7f7f7;
+}

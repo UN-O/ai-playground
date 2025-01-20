@@ -3,7 +3,7 @@ import Script from "next/script";
 // Metadata
 export const metadata = {
     title: "ChemDoodle Test",
-    description: "",
+    description: "Test ChemDoodle Functionality",
 };
 
 
@@ -11,7 +11,7 @@ export const metadata = {
 export default function Layout({ children }) {
 	return (
 		<>
-			<link
+			{/* <link
 				rel="stylesheet"
 				href="/ChemDoodleWeb-10.0.0/install/ChemDoodleWeb.css"
 				type="text/css"
@@ -19,8 +19,12 @@ export default function Layout({ children }) {
 			<Script
 				src="/ChemDoodleWeb-10.0.0/install/ChemDoodleWeb.js"
 				type="text/javascript"
-				strategy="beforeInteractive"  // 確保在頁面渲染前載入
+				strategy="afterInteractive"  // 確保在頁面渲染前載入
 			/>
+			<Script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"
+                type='text/javascript'
+                strategy='afterInteractive'
+            /> */}
 			{children}
 		</>
 	);
