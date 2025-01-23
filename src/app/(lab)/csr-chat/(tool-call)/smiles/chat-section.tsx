@@ -96,10 +96,11 @@ export default function ChatSection() {
 
                         if (part.toolName === 'generate_smiles_script') {
                             toolResults.push({
+								type: 'tool-result',
                                 toolName: 'generate_smiles_script',
-                                title: part.result.smiles,
-                                smiles: part.result.smiles,
-                                render: part.result.render,
+								toolCallId: part.toolCallId,
+								result: part.result,
+								isError: false,
                             })
                         }
                         toolResults.push(ToolResultPart);
@@ -132,6 +133,7 @@ export default function ChatSection() {
                 toolName: "generate_smiles_script", 
                 component: ({ result }) => (
                     <SmilePlot
+						id={result.toolCallId}
                         title={result.title}
                         smiles={result.smiles}
                         render={result.render}
