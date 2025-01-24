@@ -119,7 +119,7 @@ export default function ChatSection() {
         } catch (error) {
             console.error("Error in conversation stream:", error);
         }
-    }, [messages, input]);
+    }, [messages, input, appendMessage]);
 
 
 

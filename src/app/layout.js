@@ -29,15 +29,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en-US" suppressHydrationWarning>
-			<head>
-				{/* The CSS and JS from ChemDoodle */}
-				<link
-				rel="stylesheet"
-				href="/ChemDoodleWeb-10.0.0/install/ChemDoodleWeb.css"
-				/>
-				<script src="/ChemDoodleWeb-10.0.0/install/ChemDoodleWeb.js" />
-				<script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js" />
-			</head>
             <body className={`${GeistSans.variable} ${GeistMono.variable} bg-background text-foreground font-sans antialiased`}>
 				<Providers>
 					{children}

@@ -119,7 +119,7 @@ export default function SmilePlot({
 
 	// 2D rendering
 	const render2D = (molBlock: string) => {
-		const viewerCanvas = new ChemDoodle.ViewerCanvas(canvasId, 300, 300); 5
+		const viewerCanvas = new ChemDoodle.ViewerCanvas(canvasId, 300, 300); 
 		// width of the bonds for 2D depiction
 		viewerCanvas.styles.bonds_width_2D = 1.5;
 		// absolute saturation width of double and triple bond lines for 2D depiction

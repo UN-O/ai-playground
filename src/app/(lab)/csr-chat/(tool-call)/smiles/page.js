@@ -11,7 +11,7 @@ export const metadata = {
 export default function Page() {
     return (
         <div className="h-svh w-full">
-            {/* <link
+            <link
                 rel="stylesheet"
                 href="/ChemDoodleWeb-10.0.0/install/ChemDoodleWeb.css"
                 type="text/css"
@@ -24,7 +24,7 @@ export default function Page() {
             <Script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js"
                 type='text/javascript'
                 strategy='afterInteractive'
-            /> */}
+            />
             <ChatSection />
         </div>
     );
