@@ -2,26 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./smile-plot.module.css";
 import { RefreshCw } from "lucide-react"
-interface RenderConfig {
-	type: string;
-	canvasId: string;
-	dimensions?: {
-		width: number;
-		height: number;
-	};
-}
 
 // TODO 
 export default function SmilePlot({
-	id,
-	title,
-	smiles,
-	render,
+	result
 }: {
-	id: string;
-	title: string;
-	smiles: string;
-	render: RenderConfig;
+	result: any;
 }) {
 	const [viewMode, setViewMode] = useState<"2D" | "3D Dynamic" | "3D Rotation">(
 		"3D Rotation"
@@ -33,9 +19,7 @@ export default function SmilePlot({
 	// We store the ChemDoodle canvas instance in a ref,
 	// so we can stop its animation before removing the DOM element.
 	const canvasInstanceRef = useRef<any>(null);
-
-	// If the user doesn't pass in a canvasId, generate a random one
-	const canvasId = `default-canvas-${id}`;
+	const canvasId = useRef<string>(`default-canvas-${Math.random().toString(36).substring(7)}`);
 
 	// Clears the container DOM, and stops any ongoing animation on the old instance
 	const clearCanvas = () => {
@@ -50,11 +34,11 @@ export default function SmilePlot({
 		}
 
 		// 2. Now remove the old canvas from the DOM
-		const container = document.getElementById(`container-${canvasId}`);
+		const container = document.getElementById(`container-${canvasId.current}`);
 		if (container) {
 			container.innerHTML = "";
 			const newCanvas = document.createElement("canvas");
-			newCanvas.id = canvasId;
+			newCanvas.id = canvasId.current;
 			newCanvas.className = "w-full h-auto block";
 			container.appendChild(newCanvas);
 		}
@@ -82,7 +66,7 @@ export default function SmilePlot({
 			}
 
 			// 1. Load molecule from SMILES
-			let mol = (window as any).RDKit.get_mol(smiles);
+			let mol = (window as any).RDKit.get_mol(result?.smiles);
 			if (!mol) {
 				throw new Error("Failed to create molecule from SMILES");
 			}
@@ -119,7 +103,7 @@ export default function SmilePlot({
 
 	// 2D rendering
 	const render2D = (molBlock: string) => {
-		const viewerCanvas = new ChemDoodle.ViewerCanvas(canvasId, 300, 300); 
+		const viewerCanvas = new ChemDoodle.ViewerCanvas(canvasId.current, 300, 300); 
 		// width of the bonds for 2D depiction
 		viewerCanvas.styles.bonds_width_2D = 1.5;
 		// absolute saturation width of double and triple bond lines for 2D depiction
@@ -147,7 +131,7 @@ export default function SmilePlot({
 
 	// 3D dynamic rendering (rotatable by mouse)
 	const render3Dynamic = (molBlock: string) => {
-		const transformCanvas = new ChemDoodle.TransformCanvas3D(canvasId, 300, 300);
+		const transformCanvas = new ChemDoodle.TransformCanvas3D(canvasId.current, 300, 300);
 		transformCanvas.styles.set3DRepresentation("Ball and Stick");
 		transformCanvas.styles.backgroundColor = "black";
 		transformCanvas.mouseInteractions = true;
@@ -164,7 +148,7 @@ export default function SmilePlot({
 
 	// 3D auto rotation
 	const render3DRotation = (molBlock: string) => {
-		const rotateCanvas = new ChemDoodle.RotatorCanvas(canvasId, 300, 300, true);
+		const rotateCanvas = new ChemDoodle.RotatorCanvas(canvasId.current, 300, 300, true);
 		rotateCanvas.styles.atoms_useJMOLColors = true;
 		rotateCanvas.styles.backgroundColor = "transparent";
 		// 移除背景，讓外層容器的 bg-gray-100 顯示出來
@@ -203,14 +187,14 @@ export default function SmilePlot({
 	useEffect(() => {
 		clearCanvas();            // stop old instance & remove DOM
 
-		if (smiles && isMounted && !isInitialized) {
+		if (result?.smiles && isMounted && !isInitialized) {
 			// Start transition to show loading spinner
 			initializeRDKitAndRender();
 			setIsInitialized(true);
 		} // render new instance {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [smiles, isMounted]);
+	}, [result?.smiles, isMounted]);
 
 	// Re-render when view mode changes
 	useEffect(() => {
@@ -235,13 +219,13 @@ export default function SmilePlot({
 	return (
 		<div className="w-full max-w-md grid gap-4">
 			<div>
-				<h2 className="text-xl font-semibold">{title}</h2>
-				<p className="text-gray-600 text-xs">SMILES: {smiles}</p>
+				<h2 className="text-xl font-semibold">{result?.title}</h2>
+				<p className="text-gray-600 text-xs">SMILES: {result?.smiles}</p>
 			</div>
 
 			{/* 化學結構圖 */}
 			<div
-				id={`container-${canvasId}`}
+				id={`container-${canvasId.current}`}
 				className="
 							relative
 							w-full

@@ -1486,6 +1486,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@twemoji/api@npm:15.1.0":
+  version: 15.1.0
+  resolution: "@twemoji/api@npm:15.1.0"
+  dependencies:
+    "@twemoji/parser": "npm:15.1.0"
+    fs-extra: "npm:^8.0.1"
+    jsonfile: "npm:^5.0.0"
+    universalify: "npm:^0.1.2"
+  checksum: 10c0/615acb9c473f8e881f1f4397b3de1df3a721593da1c40db298748cbf7273e6a29cfbfdeb3fb2356710e9f9bd08dbe282ec5293d840cb1dc500ae5761735ae2a2
+  languageName: node
+  linkType: hard
+
+"@twemoji/parser@npm:15.1.0":
+  version: 15.1.0
+  resolution: "@twemoji/parser@npm:15.1.0"
+  checksum: 10c0/ee38a82b40f5bc945eaefd87e74da716446ad1d02e11de36ba4e6e3e24be0fccb96038b94ae09fc0ca2405d7324d1b25b37769d32264a9ef72758f025389f22c
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:^4.0.0":
   version: 4.1.12
   resolution: "@types/debug@npm:4.1.12"
@@ -1653,6 +1672,15 @@ __metadata:
     "@types/plotly.js": "npm:*"
     "@types/react": "npm:*"
   checksum: 10c0/8cd6f99766009d541615471251b377200c5fd00a08995b64566f4cdfb6d1938ee64ba38d3847c7fe3d1d7515e59c1b0111e3262481480540b1a5e5a041cc4e3b
+  languageName: node
+  linkType: hard
+
+"@types/react-twemoji@npm:^0":
+  version: 0.4.3
+  resolution: "@types/react-twemoji@npm:0.4.3"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10c0/f624617c5a47ac994cc4694e6a50f0217d9de196968313a9ca7b2aedd202ab0aca2a646513a34efc59a84fd3460c065ec5c1e352f9ac5746c7114c073fb6988d
   languageName: node
   linkType: hard
 
@@ -1884,6 +1912,7 @@ __metadata:
     "@types/react": "npm:^18.3.12"
     "@types/react-dom": "npm:^18.3.1"
     "@types/react-plotly.js": "npm:^2.6.3"
+    "@types/react-twemoji": "npm:^0"
     ai: "npm:^4.0.7"
     autoprefixer: "npm:^10.4.20"
     class-variance-authority: "npm:^0.7.1"
@@ -1906,6 +1935,7 @@ __metadata:
     react-plotly.js: "npm:^2.6.0"
     react-resizable-panels: "npm:^2.1.7"
     react-syntax-highlighter: "npm:^15.6.1"
+    react-twemoji: "npm:^0.6.0"
     rehype-katex: "npm:^7.0.1"
     rehype-raw: "npm:^7.0.0"
     remark-gfm: "npm:^4.0.0"
@@ -4174,6 +4204,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^8.0.1":
+  version: 8.1.0
+  resolution: "fs-extra@npm:8.1.0"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^4.0.0"
+    universalify: "npm:^0.1.0"
+  checksum: 10c0/259f7b814d9e50d686899550c4f9ded85c46c643f7fe19be69504888e007fcbc08f306fae8ec495b8b998635e997c9e3e175ff2eeed230524ef1c1684cc96423
+  languageName: node
+  linkType: hard
+
 "fs-minipass@npm:^3.0.0":
   version: 3.0.3
   resolution: "fs-minipass@npm:3.0.3"
@@ -4597,7 +4638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
+"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
@@ -5589,6 +5630,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonfile@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jsonfile@npm:4.0.0"
+  dependencies:
+    graceful-fs: "npm:^4.1.6"
+  dependenciesMeta:
+    graceful-fs:
+      optional: true
+  checksum: 10c0/7dc94b628d57a66b71fb1b79510d460d662eb975b5f876d723f81549c2e9cd316d58a2ddf742b2b93a4fa6b17b2accaf1a738a0e2ea114bdfb13a32e5377e480
+  languageName: node
+  linkType: hard
+
+"jsonfile@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "jsonfile@npm:5.0.0"
+  dependencies:
+    graceful-fs: "npm:^4.1.6"
+    universalify: "npm:^0.1.2"
+  dependenciesMeta:
+    graceful-fs:
+      optional: true
+  checksum: 10c0/281e32ca64e5731eb5cf6b53d759e20ed8ff94d4479336c174f5dfaf0d65b74317c3bb248386a57e2296bfd75fec9e3b5a4eb7f3fc03eb235ae1de598e3b7ae7
+  languageName: node
+  linkType: hard
+
 "jsx-ast-utils@npm:^2.4.1 || ^3.0.0, jsx-ast-utils@npm:^3.3.5":
   version: 3.3.5
   resolution: "jsx-ast-utils@npm:3.3.5"
@@ -5688,6 +5754,13 @@ __metadata:
   dependencies:
     p-locate: "npm:^5.0.0"
   checksum: 10c0/d3972ab70dfe58ce620e64265f90162d247e87159b6126b01314dd67be43d50e96a50b517bce2d9452a79409c7614054c277b5232377de50416564a77ac7aad3
+  languageName: node
+  linkType: hard
+
+"lodash.isequal@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: 10c0/dfdb2356db19631a4b445d5f37868a095e2402292d59539a987f134a8778c62a2810c2452d11ae9e6dcac71fc9de40a6fedcb20e2952a15b431ad8b29e50e28f
   languageName: node
   linkType: hard
 
@@ -7461,7 +7534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -7615,6 +7688,19 @@ __metadata:
   peerDependencies:
     react: ">= 0.14.0"
   checksum: 10c0/4a4cf4695c45d7a6b25078970fb79ae5a85edeba5be0a2508766ee18e8aee1c0c4cdd97bf54f5055e4af671fe7e5e71348e81cafe09a0eb07a763ae876b7f073
+  languageName: node
+  linkType: hard
+
+"react-twemoji@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "react-twemoji@npm:0.6.0"
+  dependencies:
+    "@twemoji/api": "npm:15.1.0"
+    lodash.isequal: "npm:^4.5.0"
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    react: ">=16.4.2"
+  checksum: 10c0/d3c292631dbf841086e9636844167235d7020030f885e105e94f9032ee8c2a917c61c3b76da4866ae6c8b0cc71587c88d830946046e5ff4e55706a0869159e81
   languageName: node
   linkType: hard
 
@@ -9240,6 +9326,13 @@ __metadata:
     unist-util-is: "npm:^6.0.0"
     unist-util-visit-parents: "npm:^6.0.0"
   checksum: 10c0/51434a1d80252c1540cce6271a90fd1a106dbe624997c09ed8879279667fb0b2d3a685e02e92bf66598dcbe6cdffa7a5f5fb363af8fdf90dda6c855449ae39a5
+  languageName: node
+  linkType: hard
+
+"universalify@npm:^0.1.0, universalify@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "universalify@npm:0.1.2"
+  checksum: 10c0/e70e0339f6b36f34c9816f6bf9662372bd241714dc77508d231d08386d94f2c4aa1ba1318614f92015f40d45aae1b9075cd30bd490efbe39387b60a76ca3f045
   languageName: node
   linkType: hard
 

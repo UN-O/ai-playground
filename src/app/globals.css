@@ -81,28 +81,29 @@
 
 
 /* ---------------------------- STYLES ---------------------------- */
-:root {
+/* :root {
 	--before-width: 3ch;
 }
 li {
 	@apply inline-block;
 }
+
 ul, ol {
 	@apply grid gap-1;
-}
+} */
 
-ul > li {
+/* ul > li {
 	@apply relative list-none ms-[var(--before-width)];
-}
+}  */
 
 /* 無序列表項目符號樣式 */
-ul > li::before {
+/* ul > li::before {
 	@apply content-['•'] absolute left-0 top-0 w-[var(--before-width)];
 	@apply font-bold text-center -translate-x-full;
-}
+} */
 
 /* 有序列表項目編號樣式 */
-ol > li::before {
+/* ol > li::before {
 	@apply absolute left-0 top-0 w-[var(--before-width)] pe-[0.5ch] [padding-block-start:_0.18em];
 	@apply text-[0.9em] text-right -translate-x-full;
-}
+} */ 

@@ -21,6 +21,10 @@
 2. 編號 2
 3. 編號 3
 
+
+![圖片本人](https://i.imgur.com/uXedmP9.png)
+
+
 ```python
 a = 114
 b = 514

@@ -131,14 +131,7 @@ export default function ChatSection() {
             toolResultRender={[
                 { 
                 toolName: "generate_smiles_script", 
-                component: ({ result }) => (
-                    <SmilePlot
-						id={result.toolCallId}
-                        title={result.title}
-                        smiles={result.smiles}
-                        render={result.render}
-                    />
-                )
+                component: SmilePlot,
             },
             ]}
         >

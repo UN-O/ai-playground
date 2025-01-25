@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../_components/ui/tooltip'
 import { X, XCircle, MessageCircle } from 'lucide-react'
-import { MarkdownRenderer } from '../_components/markdown-renderer'
+import { MarkdownText } from '@/components/common/typography'
 import HighlightOverlay from '../_components/highlight-overlay'
 
 interface BlockProps {
@@ -119,7 +119,7 @@ export default function Block({ onCloseAction, setSelectTextAction }: BlockProps
 				<X className="h-4 w-4" />
 			</Button>
 			<ScrollArea className="h-full p-4" onMouseUp={handleTextSelection} ref={scrollAreaRef}>
-				<MarkdownRenderer content={content} />
+				<MarkdownText className={''}>{content}</MarkdownText>
 				<HighlightOverlay rects={highlightRects} />
 			</ScrollArea>
 			{menuPosition && (
