@@ -79,7 +79,6 @@ export function ToolCall({ toolName, args }) {
 export function ToolResult({ toolName, result, isError, toolResultRender }) {
 
 	if (toolResultRender?.length > 0) {
-		console.log("i get here");
 		const Component = toolResultRender.find(tool => tool.toolName === toolName).component;
 		return <Component result={result} />;
 	}

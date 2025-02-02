@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils"
 // Markdown
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-const Twemoji = dynamic(() => import("react-twemoji"), { ssr: false });
 
 // Images & Icons
 import { CircleAlert, CircleCheck, CircleX, Info } from "lucide-react";
@@ -41,9 +40,7 @@ export function MarkdownText({ children, className }) {
             remarkPlugins={[remarkGfm]}
             components={{
                 p: ({ node, ...props }) => (
-                    <Twemoji options={{ className: 'twemoji' }}>
                         <p className="mb-4" {...props} />
-                    </Twemoji>
                 ),
                 h1: ({ node, ...props }) => (
                     <h1 className="text-2xl font-extrabold mb-6" {...props} />
